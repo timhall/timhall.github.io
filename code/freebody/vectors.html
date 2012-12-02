@@ -1,0 +1,250 @@
+<!doctype html> 
+<!--[if lte IE 8]>     <html class="no-js ie" lang="en"> <![endif]--> 
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]--> 
+<head> 
+    <meta charset="utf-8"> 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+    <meta name="viewport" content="width=device-width"> 
+   
+    <title>Vectors Everywhere - Freebody - Tim Hall</title> 
+    <meta name="description" content="Tim Hall: Pondering Code, Engineering, and Other Things"> 
+    <meta name="author" content="Tim Hall"> 
+ 
+    <link rel="stylesheet" href="/css/style.css" /> 
+    <script src="/js/libs/modernizr-2.5.3.min.js"></script> 
+</head> 
+<body class="code"><div class="l-container"> 
+    <header class="main-header clearfix"> 
+        <a href="/" class="logo"><abbr title="Tim Hall">TH</abbr></a>  
+        <p class="subtitle">Pondering <a href="/code/" class="link link-code">Code</a>,  
+            <a href="/eng/" class="link link-eng">Engineering</a>,  
+            and <a href="/other/" class="link link-other">Other Things</a> 
+        </p> 
+    </header> 
+ 
+    <article class="main-content"> 
+         
+        <header class="article-title"> 
+            <h1> 
+                Vectors Everywhere     
+            </h1> 
+            <div class="article-meta"> 
+                Nov. 27, 2012, Tim Hall 
+            </div> 
+            <div class="meta-links"> 
+                <span class="label project">Freebody</span> 
+                <a href="https://github.com/timhall/freebody.js" target="_blank" class="label source">Source</a> 
+            </div> 
+        </header> 
+         
+ 
+        <p>(Vector picture) 
+
+</p>
+<p>Vectors are one of the most fundamental parts of physics and are a compact way to say quite a bit. Forces, velocity, acceleration; they can all be represented by vectors. We&#39;ll get into the math of vectors below, but first a little overview. Fundamentally, vectors are used to represent things (forces, velocity, etc.) as having a magnitude and direction and from this we can figure out all sorts of things. Rather than adjusting x- and y-components with a change in direction, only the direction needs to be changed and similarly for magnitude. Two things can say quite a bit, it&#39;s kinda nifty.  
+
+</p>
+<h3>Code</h3>
+<p>So what does this look like in code? 
+
+</p>
+<pre class="sunlight-highlight-javascript">var force = new Vector(); 
+force.magnitude(2); 
+force.angle(45); 
+force.x(); // = sqrt(2) 
+force.y(); // = sqrt(2)</pre> 
+
+<p>Nice and simple. There are only four properties for the Vector class and of these only two are instance properties, magnitude and angle, as x and y can be calculated from magnitude and angle. With Vectors strewn throughout Freebody, it was essential to keep the Vector class as focused and efficient as possible. Here&#39;s a stubbed out version of the Vector class (you can find the full class in the <a href="https://github.com/timhall/freebody.js">source</a>): 
+
+</p>
+<pre class="sunlight-highlight-javascript">var Vector = function (magnitude, angle) { 
+    // Magnitude and angle are the only instance properties 
+    this._magnitude = magnitude; 
+    this._angle = angle; 
+
+    return this; 
+} 
+
+// Add getters/setters to prototype  
+// so that they are shared by all Vectors 
+Vector.prototype = { 
+    magnitude: function (value) { 
+
+    }, 
+    angle: function (value) { 
+
+    }, 
+    x: function (value) { 
+
+    }, 
+    y: function (value) { 
+
+    } 
+}</pre> 
+
+<p>Some things to note: 
+
+</p>
+<ol>
+<li><p>Why not pass the traditional <code>options</code> argument into the class?  </p>
+<p>Something to keep in mind during javascript game development is that while js engines have gotten much faster, garbage collection can rear its ugly head and be a real frame-rate killer. One of the best ways to limit the aggressiveness of garbage collection is avoiding creating new objects in the event loop (which includes anything created with <code>new</code>, <code>{}</code>, and <code>[]</code>). Say you&#39;ve determined that you have to create a new Vector during the event loop and chose the <code>options</code> style.  </p>
+<pre class="sunlight-highlight-javascript">new Vector({ angle: 45 })</pre> 
+
+<p>What is not immediately obvious is that this line actually creates two objects, one from the <code>new</code> and one from the <code>{}</code>. These throwaway objects, especially those created with <code>{}</code>, can start to add up and are ripe for garbage collection. Switching to named arguments is a quick way to cut object creation in half for the Vector class. </p>
+</li>
+<li><p>Why have getters/setters for magnitude and angle if they are simple properties? </p>
+<p>This was mainly to cut down on confusion from having some properties requiring the <code>()</code> and others not. Since the getter/setter is defined in the function prototype and is therefore shared with all Vectors, there should be minimal increased overhead from adding them. </p>
+</li>
+</ol>
+<h4>Getters and Setters</h4>
+<p>The getter and setter methods for all four properties follow a simple structure (although x and y have different internals as we&#39;ll see in just a sec): 
+
+</p>
+<pre class="sunlight-highlight-javascript">property: function (value) { 
+    if (value !== undefined) { 
+        // Setter 
+        this._property = value; 
+
+        // Return parent for chaining 
+        return this; 
+    } else { 
+        // Getter 
+        return this._property; 
+    }    
+}</pre> 
+
+<p>By returning the parent in the setter method, you can chain set methods together for jQuery-style convenience: 
+
+</p>
+<pre class="sunlight-highlight-javascript">var force = new Vector().x(1).y(2); // Force is a vector with x and y set</pre> 
+
+<h3>Vector Math</h3>
+<p>Now to get a little into the nitty gritty of vector math. One of the things that make vectors so attractive is that they can be simply thought of as triangles and by then applying basic trig we can figure out all of the necessary properties. So let&#39;s see what this looks like: 
+
+</p>
+<p>(Vector Picture) 
+
+</p>
+<ol>
+<li>We have a vector with a defined magnitude and angle </li>
+<li>In order to determine the x- and y-components, we treat the magnitude as the hypotenuse of the triangle </li>
+<li>With the triangle drawn, we can simply use sin and cos to find the x- and y-components: 
+<code>\[\begin{aligned} 
+x &amp; = magnitude \times\cos(angle) \\ 
+y &amp; = magnitude \times\sin(angle) 
+\end{aligned} \]     </code> </li>
+</ol>
+<p>Let&#39;s plug this in: 
+
+</p>
+<pre class="sunlight-highlight-javascript">x: function (value) { 
+    if (value !== undefined) { 
+        // We'll cover this in a sec 
+    } else { 
+        return this._magnitude * Math.cos(this._angle); 
+    } 
+}, 
+y: function (value) { 
+    if (value !== undefined) { 
+        // We'll cover this in a sec 
+    } else { 
+        return this._magnitude * Math.sin(this._angle); 
+    } 
+}</pre> 
+
+<h4>Setting x- and y-components</h4>
+<p>Setting the magnitude and angle based on the x- and y-components requires a little more finesse and we have to ask ourselves what the desired behavior is for setting the remaining properties. The issue is, the vector needs two properties in order to be defined (it doesn&#39;t matter which two, just two). So when setting one component of the vector we have to choose one of the three remaining properties, keep it fixed, and adjust the remaining two properties. When setting the x-component, should we keep the y-component, magnitude, or angle fixed? 
+
+</p>
+<p>(Choices picture) 
+
+</p>
+<p>My vote for what is the expected behavior is to keep the opposite component fixed and adjust the magnitude and angle. By setting the x- or y-component, it is expected that the magnitude and angle are intrinsically going to change. Using the pythagorean theorem and a little more trig: 
+
+</p>
+<p><code>\[\begin{aligned} 
+magnitude &amp; = \sqrt{x^2 \times y^2} \\ 
+angle &amp; = atan(y/x) 
+\end{aligned} \] </code> 
+
+</p>
+<p>So let&#39;s finish up the Vector class: 
+
+</p>
+<pre class="sunlight-highlight-javascript">x: function (value) { 
+    if (value !== undefined) { 
+        setMagnitudeAndAngle(this, value, this.y()); 
+        return this; 
+    } else { 
+        return this._magnitude * Math.cos(this._angle); 
+    } 
+}, 
+y: function (value) { 
+    if (value !== undefined) { 
+        setMagnitudeAndAngle(this, this.x(), value); 
+        return this; 
+    } else { 
+        return this._magnitude * Math.sin(this._angle); 
+    } 
+} 
+
+// (Keep it DRY) 
+var setMagnitudeAndAngle = function (vector, xValue, yValue) { 
+    vector._magnitude = utils.hypotenuse(xValue, yValue); 
+    vector._angle = Math.atan2(y, x); 
+} 
+
+// utils.js 
+utils.hypotenuse = function (x, y) { 
+    return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)); 
+};</pre> 
+
+<p>You may notice the <code>atan2(y, x)</code> function call. This is used to overcome a natural limitation in atan, where the direction of the resulting angle may be skewed for negative x-values (<a href="http://www.khanacademy.org/math/trigonometry/v/inverse-trig-functions--arctan">Read More</a>). 
+
+</p>
+<h3>All finished</h3>
+<p>And with that, our vector class is complete (with only a few things, such as keeping the angles in degrees, left out for brevity). You can view the entire source <a href="https://github.com/timhall/freebody.js">here</a>. 
+
+</p>
+<h3>Tips</h3>
+<ul>
+<li><a href="https://www.scirra.com/blog/76/how-to-write-low-garbage-real-time-javascript">How to write low garbage real-time Javascript</a> </li>
+<li><a href="http://www.khanacademy.org/math/trigonometry">Trig Refresher</a> </li>
+</ul>
+<h3>Keep reading</h3>
+<ol>
+<li><a href="./intro">What is Freebody?</a> </li>
+<li>Vectors Everywhere </li>
+<li><a href="./body">What&#39;s a Body?</a> </li>
+<li><a href="./experiments">Experiments with Lightweight Vectors</a> </li>
+<li><a href="./perspective">The New Kid&#39;s Perspective</a> </li>
+<li><a href="./math">Does the Math Work?</a></li>
+</ol>
+ 
+ 
+    </article> 
+</div> 
+ 
+<link rel="stylesheet" href="/css/sunlight.default.css" /> 
+<script src="/js/libs/sunlight.min.js"></script> 
+<script type="text/javascript"> 
+    Sunlight.highlightAll(); 
+</script> 
+ 
+<script type="text/x-mathjax-config"> 
+    // Configure MathJax to work better with Markdown (<code> tags) 
+    MathJax.Hub.Config({ 
+        tex2jax: { skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }, 
+        showProcessingMessages: false 
+    }); 
+    MathJax.Hub.Queue(function() { 
+        var all = MathJax.Hub.getAllJax(), i; 
+        for(i = 0; i < all.length; i += 1) { 
+            all[i].SourceElement().parentNode.className += ' has-jax'; 
+        } 
+    }); 
+</script> 
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script> 
+ 
+</body> 
+</html>
