@@ -3,9 +3,10 @@
 
 @white: #fff;
 @black: #000;
-@blue: #36B1BF;
+@blue: #128aa8;
 @green: #528C37;
 @orange: #DB9830;
+@red: #a81212;
 
 @page-bg: @white;
 @text: @black;
@@ -13,7 +14,8 @@
 
 @home-bg: @blue;
 @code-bg: @green;
-@eng-bg: @orange;
+@eng-bg: @red;
+@other-bg: @home-bg;
 
 @logo-size: 60px;
 @main-padding: 1em;
@@ -31,29 +33,44 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.0;
     font-weight: 300;
 }
-h5, h6 {
+h5 {
     font-style: italic;
 }
-/* 2:3, 16-40 */
-h1 { font-size: 2.5em; }
-h2 { font-size: 2.25em; }
-h3 { font-size: 1.667em; }
-h4 { font-size: 1.5em; }
-h5 { font-size: 1.111em; }
-h6 { font-size: 1em; }
-
+/* Modular Scale - 2:3, 16-40 */
+h1 { font-size: 2.25em; }
+h2 { font-size: 1.667em; }
+h3 { font-size: 1.5em; }
+h4 { font-size: 1.111em; }
+h5 { font-size: 1em; }
 
 body {
     background: @home-bg;
     .logo { color: @home-bg; }
+    a, a:visited {
+        color: @home-bg;
+    }
     
     &.code {
         background: @code-bg;
         .logo { color: @code-bg; }
+        a, a:visited { color: @code-bg; }
+        .project {
+            background-color: @code-bg;
+            color: #fff;  
+        }
+        .source, .source:visited {
+            background-color: @blue;
+            color: #fff;
+        }
     }
     &.eng {
         background: @eng-bg;
         .logo { color: @eng-bg; }
+        a, a:visited { color: @eng-bg; }
+        .project {
+            background-color: @eng-bg;
+            color: #fff;  
+        }
     }
 }
 
@@ -97,16 +114,16 @@ body {
             margin: 0 1px;
         }
         & > .link-code:hover {
-            color: @green;
-            border-color: @green;
+            color: @code-bg;
+            border-color: @code-bg;
         }
         & > .link-eng:hover {
-            color: @orange;
-            border-color: @orange;
+            color: @eng-bg;
+            border-color: @eng-bg;
         }
         & > .link-other:hover {
-            color: @blue;
-            border-color: @blue;
+            color: @other-bg;
+            border-color: @other-bg;
         }
     }       
 }
@@ -120,9 +137,30 @@ body {
 
 .article-title {
     margin-bottom: 10px;
+    
+    & .label {
+        font-size: 16px;
+        line-height: 22px;
+    }
 }
 .article-meta {
     color: #999;
+}
+.meta-links {
+    margin-top: 6px;
+}
+
+.label {
+    display: inline-block;
+    padding: 2px 6px; 
+    vertical-align: baseline;
+    text-decoration: none;
+}
+code.has-jax {
+    font: inherit; 
+    font-size: 100%; 
+    background: inherit; 
+    border: inherit;
 }
 
 @media only screen and (min-width: 50em) {
