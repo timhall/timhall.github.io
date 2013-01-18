@@ -70,8 +70,11 @@ pre .number { color: #CC6600; }
    Author's custom styles
    ========================================================================== */
 
+@bg-color: #128aa8;
+@padding: 30px;
+
 html {
-    background: #128aa8; /*#528c37;*/
+    background: @bg-color; /*#528c37;*/
 }
 body {
     -webkit-font-smoothing: antialiased;
@@ -80,31 +83,28 @@ body {
     font-family: "Segoe UI", "Helvetica Neue", sans-serif;
 }
 a {
-    color: darken(#128aa8, 5%);
-}
-
-.header {
-    width: 600px;
-    margin: 0 auto;
-    position: relative;
-}
-.logo {
-    left: -105px;
-    color: rgb(255, 255, 255);
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 50px;
-    font-weight: bold;
-    position: absolute; 
+    color: darken(@bg-color, 5%);
     text-decoration: none;
+    border-bottom: dashed 1px;
+    border-color: rgb(18, 138, 168);
+    border-color: rgba(18, 138, 168, 0.3);
     
     &:hover {
-        color: #fff;
-    }   
+        border-bottom-style: solid;
+    }
+}
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1.05;
+    margin: 0.8em 0 0 0;
+}
+
+.container {
+    position: relative;
+    margin: 0 auto;
 }
 
 .content {
-    width: 600px;
-    margin: 0 auto; 
+    margin: 6px auto 0 auto; 
     padding: 10px 30px;
     background: #fff;
 }
@@ -112,25 +112,49 @@ a {
 .article-header {
     margin: 0.2em 0 0 0;
 }
+.article-title {
+    margin: 0;
+}
+.logo {
+    color: @bg-color;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-decoration: none;
+    position: relative;
+    top: 3px;
+    border: none;
+    
+    &:hover {
+        color: lighten(@bg-color, 3%);
+        border: none;
+    }   
+}
 .article-meta {
     color: #999;
 }
 .article-footer {
-    margin: 2em 0 1em 0;
+    margin: 2em 0 0.5em 0;
     text-align: center;
     color: darken(#b2b2b2, 20%);
 }
 
-
-
-
-
-
-
-
-
-
-
+.home-blurb {
+    font-size: 1.5em;
+    text-align: center;
+    color: darken(@bg-color, 5%);
+}
+.link-list {
+    list-style: none;
+    margin: 0.7em 0;
+    padding: 0 1em;
+    
+    & > li {
+        
+    }   
+    p {
+        margin-top: 0;
+    }
+}
 
 
 
@@ -138,8 +162,10 @@ a {
    Media Queries
    ========================================================================== */
 
-@media only screen and (min-width: 35em) {
-
+@media only screen and (min-width: 650px) {
+    .container {
+        width: 650px;
+    }
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5),
