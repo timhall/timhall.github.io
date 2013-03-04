@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="/css/main.css">
     
     <script src="/js/vendor/modernizr-2.6.2.min.js"></script>
-    <script src="/js/vendor/cssrefresh.js"></script>
 </head>
 <body><div class="container">
 
@@ -121,7 +120,7 @@ Vector.prototype = {
     <p>Now to get a little into the nitty gritty of vector math. One of the things that make vectors so attractive 
         is that they can be simply thought of as triangles and by then applying basic trig we can figure out all of the necessary properties. 
         So let's see what this looks like:</p>
-    <p>(Vector Picture)</p>
+    <!--<p>(Vector Picture)</p>-->
     <ol>
         <li>We have a vector with a defined magnitude and angle</li>
         <li>In order to determine the x- and y-components, we treat the magnitude as the hypotenuse of the triangle</li>
@@ -156,7 +155,7 @@ y: function (value) {
         So when setting one component of the vector we have to choose one of the three remaining properties, 
         keep it fixed, and adjust the remaining two properties. 
         When setting the x-component, should we keep the y-component, magnitude, or angle fixed?</p>
-    <p>(Choices picture)</p>
+    <!--<p>(Choices picture)</p>-->
     <p>My vote for what is the expected behavior is to keep the opposite component fixed and adjust the magnitude and angle. 
         By setting the x- or y-component, it is expected that the magnitude and angle are intrinsically going to change. 
         Using the pythagorean theorem and a little more trig:</p>
@@ -227,11 +226,26 @@ utils.hypotenuse = function (x, y) {
     hljs.initHighlightingOnLoad();
 </script>
 
-<!--<script>
-    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+<script type="text/x-mathjax-config">
+    // Configure MathJax to work better with Markdown (<code> tags)
+    MathJax.Hub.Config({
+        tex2jax: { skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'] },
+        showProcessingMessages: false
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i = 0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+<script>
+    var _gaq=[['_setAccount','UA-38523419-2'],['_trackPageview']];
     (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
     g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
     s.parentNode.insertBefore(g,s)}(document,'script'));
-</script>-->
+</script>
 </body>
 </html>
