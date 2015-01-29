@@ -1,0 +1,29 @@
+name: Tim Hall
+
+url: http://timhall.github.io
+
+defaults:
+- scope:
+    path: ""
+  values:
+    layout: "default"
+- scope:
+    path: "articles"
+    type: "pages"
+  values:
+    layout: "articles"
+
+exclude:
+- Gemfile
+- Gemfile.lock
+- readme.md
+
+relative_permalinks: true
+highlighter: pygments
+markdown: redcarpet
+redcarpet:
+  extensions:
+  - fenced_code_blocks
+sass:
+  style: :compressed
+  sass_dir: _css
