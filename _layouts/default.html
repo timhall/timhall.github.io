@@ -3,8 +3,10 @@ layout: blank
 ---
 <div class="container"><article class="content">
   <header class="article-header">
-    <h1 class="article-title"><a class="logo" href="/">TH</a> Tim Hall</h1>
-    <span class="article-meta">Pondering Engineering, Code, and Other Things</span>
+    <h1 class="article-title"><a class="logo" href="/">TH</a> {{ page.title }}</h1>
+    {{ if page.meta }}
+      <span class="article-meta">{{ page.meta }}</span>
+    {{ endif }}
   </header>
 
   {{ content }}
