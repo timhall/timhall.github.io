@@ -34,7 +34,11 @@ a {
 
 h1, h2, h3, h4, h5, h6 {
   line-height: 1.05;
-  margin: 0.8em 0 0 0;
+  margin: 0.9em 0 0 0;
+}
+
+ol, ul {
+  padding: 0 0 0 2em;
 }
 
 code {
@@ -87,12 +91,17 @@ pre {
   background: #fff;
 }
 
+// Article
+// ----------------------------------------------------- //
+
 .article-header {
   margin: 0.2em 0 0 0;
 }
+
 .article-title {
   margin: 0;
 }
+
 .logo {
   color: $primary-color;
   font-size: 1.3em;
@@ -107,43 +116,56 @@ pre {
     border: none;
   }   
 }
+
 .article-meta {
   color: #999;
 }
+
 .article-footer {
   margin: 2em 0 0.5em 0;
   text-align: center;
   color: darken(#b2b2b2, 20%);
 }
 
+// Home
+// ----------------------------------------------------- //
+
 .home-blurb {
   font-size: 1.5em;
   text-align: center;
   color: darken($primary-color, 5%);
 }
+
 .link-list {
   list-style: none;
   margin: 0.7em 0;
   padding: 0 1em;
   
-  & > li {
-      
-  } 
   p {
     margin-top: 0;
   }
 }
 
+// Media
+// ----------------------------------------------------- //
+
 @media only screen and (max-width: 45em) {
   html {
     font-size: 0.95em;
   }
+
   .content {
     padding: 10px;
   }
+
+  .article-title {
+    font-size: 1.6em;
+  }
+
   .home-blurb {
     font-size: 1.3em;
   }
+
   .link-list {
     padding: 0 0.5em;
   }
