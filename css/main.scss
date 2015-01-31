@@ -95,8 +95,22 @@ pre, code {
   }
 }
 
-@media only screen and (min-width: 650px) {
+@media only screen and (max-width: 45em) {
+  html {
+    font-size: 0.9em;
+  }
+  .content {
+    padding: 10px;
+  }
+  .home-blurb {
+    font-size: 1.3em;
+  }
+  .link-list {
+    padding: 0 0.5em;
+  }
+}
+@media only screen and (min-width: 45em) {
   .container {
-    width: 650px;
+    width: 45em;
   }
 }
