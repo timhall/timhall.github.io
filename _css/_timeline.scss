@@ -1,0 +1,57 @@
+.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.timeline-item {
+  &.type-professional {
+    
+  }
+
+  .company {
+    font-weight: bold;
+
+    &:after {
+      content: ", ";
+      font-weight: normal;
+    }
+  }
+
+  .location {
+    &:after {
+      content: ", ";
+    }
+  }
+
+  .dates {
+
+  }
+
+  .start-date {
+
+  }
+
+  .end-date {
+    &:before {
+      content: " - ";
+    }
+  }
+
+  .title {
+    display: block;
+  }
+
+  .details {
+    & > li > p {
+      margin: 0;
+    }
+  }
+}
+
+// Media
+// ----------------------------------------------------- //
+
+@media only screen and (max-width: 45em) {
+  
+}

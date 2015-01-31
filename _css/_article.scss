@@ -1,0 +1,67 @@
+// Article
+// ----------------------------------------------------- //
+
+.article-header {
+  @extend .container;
+
+  margin-top: 0.2em;
+  padding-top: 10px;
+  padding-bottom: 1em;
+  background-color: #fff;
+}
+
+.article-title {
+  margin: 0;
+}
+
+.logo {
+  color: $primary-color;
+  font-size: 1.3em;
+  font-weight: bold;
+  text-decoration: none;
+  position: relative;
+  top: 3px;
+  border: none;
+  
+  &:hover {
+    color: lighten($primary-color, 3%);
+    border: none;
+  }   
+}
+
+.article-meta {
+  color: #999;
+}
+
+.content {
+  @extend .container;
+  @extend .clearfix;
+
+  background: #fff;
+
+  & > p:first-child, & > h1:first-child, & > h2:first-child {
+    margin-top: 0;
+  }
+  & > p:last-child, & > ul:last-child, & > ol:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.article-footer {
+  @extend .container;
+  padding-top: 2em;
+  margin-bottom: 0.2em;
+  padding-bottom: 1em;
+  text-align: center;
+  color: darken(#b2b2b2, 20%);
+  background-color: #fff;
+}
+
+// Media
+// ----------------------------------------------------- //
+
+@media only screen and (max-width: 45em) {
+  .article-title {
+    font-size: 1.6em;
+  }
+}

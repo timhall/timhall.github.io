@@ -1,0 +1,25 @@
+---
+layout: default
+title: Timeline
+---
+
+<ul class="timeline">
+  {% for item in site.data.about.timeline %}
+    {% if item.type == "professional" %}
+      <li class="timeline-item type-professional">
+        <span class="company">{{ item.company }}</span>
+        <span class="location">{{ item.location }}</span>
+        <span class="dates">
+          <time class="start-date">{{ item.start_date }}</time>
+          <time class="end-date">{{ item.end_date }}</time>
+        </span>
+        <span class="title">{{ item.title }}</span>
+        <ul class="details">
+          {% for detail in item.details %}
+            <li>{{ detail | markdownify }}</li>
+          {% endfor %}
+        </ul>
+      </li>
+    {% endif %}
+  {% endfor %}
+</ul>
