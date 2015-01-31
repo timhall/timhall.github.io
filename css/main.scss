@@ -1,24 +1,27 @@
 ---
 ---
+$primary-color: #128aa8;
 
 @import 'normalize';
 @import 'syntax';
 @import 'h5bp';
 
-$bg-color: #128aa8;
-$padding: 30px;
+// Base
+// ----------------------------------------------------- //
 
 html {
-  background: $bg-color;
+  background: $primary-color;
 }
+
 body {
   -webkit-font-smoothing: antialiased;
   overflow-y: scroll;
   line-height: 1.5;
   font-family: "Segoe UI", "Helvetica Neue", sans-serif;
 }
+
 a {
-  color: darken($bg-color, 5%);
+  color: darken($primary-color, 5%);
   text-decoration: none;
   border-bottom: dashed 1px;
   border-color: rgb(18, 138, 168);
@@ -28,13 +31,49 @@ a {
     border-bottom-style: solid;
   }
 }
+
 h1, h2, h3, h4, h5, h6 {
   line-height: 1.05;
   margin: 0.8em 0 0 0;
 }
-pre, code {
-  font: 13px Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  line-height: 1.45;
+
+code {
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  padding: 0.1em 0.3em;
+  margin: 0;
+  background-color: rgba(0, 0, 0, 0.03);
+  border-radius: 3px;
+  font-size: 0.9em;
+
+  &.has-jax {
+    padding: 0;
+    background-color: none;
+  }
+}
+
+pre {
+  border-left: solid 2px #eee;
+  padding: 5px 0 5px 10px;
+  max-width: 50em;
+  line-height: 1.4em;
+  word-wrap: normal;
+  overflow: auto;
+
+  & > code {
+    padding: 0;
+    margin: 0;
+    background: none;
+    border-radius: 0;
+    font-size: 0.85em;
+    white-space: pre;
+  }
+
+  .hll {
+    background-color: fade-out($primary-color, 0.93);
+    display: block;
+    margin-left: -10px;
+    padding-left: 10px;
+  }
 }
 
 .container {
@@ -55,7 +94,7 @@ pre, code {
   margin: 0;
 }
 .logo {
-  color: $bg-color;
+  color: $primary-color;
   font-size: 1.3em;
   font-weight: bold;
   text-decoration: none;
@@ -64,7 +103,7 @@ pre, code {
   border: none;
   
   &:hover {
-    color: lighten($bg-color, 3%);
+    color: lighten($primary-color, 3%);
     border: none;
   }   
 }
@@ -80,7 +119,7 @@ pre, code {
 .home-blurb {
   font-size: 1.5em;
   text-align: center;
-  color: darken($bg-color, 5%);
+  color: darken($primary-color, 5%);
 }
 .link-list {
   list-style: none;
