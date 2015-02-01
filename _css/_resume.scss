@@ -4,15 +4,26 @@ $professional-color: $primary-color;
 $project-color: darken(#fc3, 10%);
 
 .resume {
+  
+}
+
+.resume-section {
+  @extend .column;
   @extend .clearfix;
-  list-style: none;
-  margin: 0;
-  padding: 5px 0;
+
+  &.type-experience {
+    @extend .column-left;
+  }
+  &.type-projects {
+    @extend .column-right;
+  }
+
+  h2 {
+    margin: 0.2em 0 0.6em 0;
+  }
 }
 
 .resume-item {
-  @extend .column;
-  position: relative;
   border-left: solid $resume-border-width $resume-color;
   padding-left: 14px;
   margin-bottom: 20px;
@@ -20,13 +31,10 @@ $project-color: darken(#fc3, 10%);
   &:last-child {
     margin-bottom: 0;
   }
-
-  &.type-professional {
-    @extend .column-left;
+  .type-experience & {
     border-left-color: $professional-color;
   }
-  &.type-project {
-    @extend .column-right;
+  .type-projects & {
     border-left-color: $project-color;
   }
 
@@ -79,7 +87,7 @@ $project-color: darken(#fc3, 10%);
     }
   }
 
-  .professional-details {
+  .details {
     padding-left: 1.5em;
     list-style-type: disc;
     margin: 0.5em 0 0 0;
@@ -96,5 +104,14 @@ $project-color: darken(#fc3, 10%);
   .github-star {
     vertical-align: sub;
     margin-left: 4px;
+  }
+}
+
+// Media
+// ----------------------------------------------------- //
+
+@media only screen and (max-width: 720px) {
+  .resume-section:nth-child(2) h2 {
+    margin-top: 1em;
   }
 }
