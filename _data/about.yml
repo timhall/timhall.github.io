@@ -18,16 +18,39 @@ timeline:
     - "Create composable and configurable d3.chart system that dramatically simplifies the process of creating new chart types (Line, Bars, etc.) and allows rapid iteration of chart design and layout"
     - "Craft an asynchronous data layer for working with csv data in d3, including querying, caching, filtering, reducing, formatting, and other advanced behavior"
 
-  # - project: VBA-Web
-  #   type: project
-  #   blurb: Most-starred VBA project on GitHub (admittedly a dubious honor)
+  - project: VBA-Web
+    github:
+      user: VBA-tools
+      repo: VBA-Web
+    type: project
+    blurb: |
+      The most-starred VBA project on GitHub (admittedly a dubious honor) that gives structured web queries to Excel, Access, etc. for Windows and Mac (quite an accomplishment, since there was previously no straighforward way of accessing web services on Mac). Extracted from work coordinating Salesforce, Trello, and Ducksboard from Excel. [Github](https://github.com/VBA-tools/VBA-Web)
+    example: |
+      ```VB.net
+      Dim Client As New WebClient
+      Client.BaseUrl = "https://api.example.com/"
+
+      Dim Request As New WebRequest
+      Request.Resource = "users/123"
+      Request.Method = WebMethod.HttpPut
+      Request.Format = WebFormat.Json
+      Request.AddBodyParameter "key", "value"
+
+      Dim Response As WebResponse
+      Set Response = Client.Execute(Request)
+      ' -> PUT https://api.example.com/users/123 {"key":"value"}
+      '    - JSON conversion and parsing
+      '    - GET, POST, PUT, DELETE
+      '    - Authentication (Basic, OAuth, etc.)
+      '    - and more!
+      ```
 
   - company: Nexant
     location: "Cary, NC"
     titles:
     - title: Project Engineer
       start_date:
-        month: March
+        month: January
         year: 2013
       end_date: 
         month: May
@@ -37,7 +60,7 @@ timeline:
         month: August
         year: 2011
       end_date: 
-        month: March
+        month: January
         year: 2013
     type: professional
     blurb: 
@@ -45,6 +68,34 @@ timeline:
     - "Coordinated with a distributed team to lead development of web-based energy auditing tools to modernize existing spreadsheets tools and introduce new offerings, using HTML5, CSS3, Knockout.js and Node.js to quickly build dynamic web applications"
     - "Developed advanced engineering tools and process automation using Excel VBA and leveraging REST APIs (including Salesforce, Trello, and others) to standardize and improve engineering calculations and processing for lighting, HVAC, insulation, and weather. (See Excel-REST for details: https://github.com/timhall/Excel-REST)"
     - "Implment test-driven development framework for customer-facing and internal spreadsheets to reduce product maintenance, allow faster iteration of new features, and ensure accurate energy savings and rebates. (See Excel-TDD for details: https://github.com/timhall/Excel-TDD)"
+
+  - project: knockout.collection
+    github:
+      user: timhall
+      repo: knockout.collection
+    type: project
+    blurb: |
+      knockout.collection was designed to make it much simpler and more efficient to work with observable arrays in knockout.js. Standard methods of working with large arrays in knockout.js caused the entire DOM that depended on them to be re-rendered and wiring up listeners for dependencies required quite a bit of boilerplate and was error-prone. This solved a major pain point in developing a large knockout.js project.
+    example: |
+      ```js
+      var messages = ko.observableArray([
+        { id: 1, subject: 'Hi there!', from: 'Friend' },
+        { id: 2, subject: 'Something important', from: 'Boss' },
+        { id: 3, subject: 'Lunch?', from: 'Friend' },
+        { id: 4, subject: 'Get back to work', from: 'Boss' }
+      ]);
+      var filterBy = ko.observable('Friend');
+
+      var filteredMessages = ko.collection(messages).filter(function (message) {
+        return message.from == filterBy();
+      });
+      // filteredMessages automatically recalculates whenever messages or filterBy changes
+
+      // Features:
+      // - filter, map, pluck, and uniq functions observe changes of internal observables
+      // - results are patched, making redraws occur only as-needed
+      // - results are cached to avoid unneccesary re-evaluations
+      ```
 
   - company: University of Maryland - Advanced Manufacturing Lab
     location: "College Park, MD"

@@ -1,15 +1,15 @@
 ---
 layout: blank
 ---
-<header class="article-header">
+<header class="article-header{% if page.columns %} two-column{% endif %}">
   <h1 class="article-title"><a class="logo" href="/">TH</a> {{ page.title }}</h1>
   {{ if page.meta }}
     <span class="article-meta">{{ page.meta }}</span>
   {{ endif }}
 </header>
-<article class="content">
+<article class="article-content{% if page.columns %} two-column{% endif %}">
   {{ content }}
 </article>
-<footer class="article-footer">
+<footer class="article-footer{% if page.columns %} two-column{% endif %}">
   Tim Hall - Pondering Engineering, Code, and Other Things
 </footer>

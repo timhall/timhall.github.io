@@ -10,6 +10,7 @@ $professional-color: $primary-color;
 $project-color: darken(#fc3, 10%);
 
 .timeline {
+  @extend .clearfix;
   list-style: none;
   margin: 0;
   padding: 5px 0 5px $timeline-gap;
@@ -17,6 +18,7 @@ $project-color: darken(#fc3, 10%);
 }
 
 .timeline-item {
+  @extend .column;
   position: relative;
   border-left: solid $timeline-border-width $timeline-color;
   padding-left: 14px;
@@ -31,6 +33,7 @@ $project-color: darken(#fc3, 10%);
   }
 
   &.type-professional {
+    @extend .column-left;
     border-left-color: $professional-color;
 
     &:before {
@@ -42,6 +45,7 @@ $project-color: darken(#fc3, 10%);
     }
   }
   &.type-project {
+    @extend .column-right;
     margin-left: $project-gap;
     border-left-color: $project-color;
 
@@ -69,6 +73,7 @@ $project-color: darken(#fc3, 10%);
     &:after {
       content: ", ";
       font-weight: normal;
+      margin-right: 2px;
     }
   }
 
@@ -77,17 +82,12 @@ $project-color: darken(#fc3, 10%);
   }
 
   .titles {
-    // @extend .clearfix;
     list-style: none;
     margin: 0 0 6px 0;
     padding: 0;
 
     & > li {
-      // float: left;
       display: block;
-      // margin-left: 20px;
-      margin-top: 4px;
-      // text-align: center;
 
       &:first-child {
         margin-left: 0;
@@ -96,34 +96,28 @@ $project-color: darken(#fc3, 10%);
   }
 
   .title {
-    display: block;
-    // margin-top: 2px;
+    margin-right: 4px;
   }
 
   .dates {
-    @extend .clearfix;
+    
   }
 
   .date {
-    // height: 2.6em;
-    text-align: center;
-    float: left;
+    
   }
 
   .date-name {
-    // line-height: 2.6em;
+    
   }
   .date-month {
     line-height: 1.0em;
   }
   .date-year {
     line-height: 1.0em;
-    // display: block;
   }
   .date-range {
-    float: left;
-    // line-height: 2.6em;
-    padding: 0 4px;
+    padding: 0 2px;
   }
 
   .start-date {
@@ -143,6 +137,7 @@ $project-color: darken(#fc3, 10%);
   .professional-details {
     padding-left: 1.5em;
     list-style-type: disc;
+    margin: 0.5em 0 0 0;
 
     & > li > p {
       margin: 0;
@@ -151,6 +146,11 @@ $project-color: darken(#fc3, 10%);
 
   .project {
     font-weight: bold;
+  }
+
+  .github-star {
+    vertical-align: sub;
+    margin-left: 4px;
   }
 }
 

@@ -33,7 +33,7 @@
   color: #999;
 }
 
-.content {
+.article-content {
   @extend .container;
   @extend .clearfix;
 
@@ -49,9 +49,9 @@
 
 .article-footer {
   @extend .container;
-  padding-top: 2em;
+  padding-top: 1.5em;
   margin-bottom: 0.2em;
-  padding-bottom: 1em;
+  padding-bottom: 1.5em;
   text-align: center;
   color: darken(#b2b2b2, 20%);
   background-color: #fff;
@@ -63,5 +63,24 @@
 @media only screen and (max-width: 45em) {
   .article-title {
     font-size: 1.6em;
+  }
+}
+
+@media only screen and (min-width: 95em) {
+  .article-header.two-column, .article-content.two-column, .article-footer.two-column {
+    width: 90em;
+  }
+
+  .column {
+    width: 42em;
+
+    &.column-left {
+      float: left;
+      clear: left;
+    }
+    &.column-right {
+      float: right;
+      clear: right;
+    }
   }
 }

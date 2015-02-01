@@ -1,5 +1,6 @@
 ---
 layout: default
+columns: 2
 title: Timeline
 ---
 
@@ -8,9 +9,12 @@ title: Timeline
     {% if item.type == "professional" %}
       <section class="timeline-item type-professional">
         <i class="type-icon"></i>
+        <span class="company">{{ item.company }}</span>
+        <span class="location">{{ item.location }}</span>
         <ul class="titles">
         {% for title in item.titles %}
           <li>
+            <span class="title">{{ title.title }}</span>&mdash;
             <span class="dates">
               <time class="date start-date">
                 {% if title.start_date.name %}
@@ -30,12 +34,9 @@ title: Timeline
                 {% endif %}
               </time>
             </span>
-            <span class="title">{{ title.title }}</span>
           </li>
         {% endfor %}
         </ul>
-        <span class="company">{{ item.company }}</span>
-        <span class="location">{{ item.location }}</span>
         {% if item.blurb %}
         <div class="blurb">
           {{ item.blurb | markdownify }}
@@ -52,9 +53,20 @@ title: Timeline
       <section class="timeline-item type-project">
         <i class="type-icon"></i>
         <span class="project">{{ item.project }}</span>
+        {% if item.github %}
+          <iframe src="https://ghbtns.com/github-btn.html?user={{ item.github.user }}&repo={{ item.github.repo }}&type=star&count=true" 
+            class="github-star" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
+        {% endif %}
+        {% if item.blurb %}
         <div class="blurb">
           {{ item.blurb | markdownify }}
         </div>
+        {% endif %}
+        {% if item.example %}
+        <div class="example">
+          {{ item.example | markdownify }}
+        </div>
+        {% endif %}
       </section>
     {% endif %}
   {% endfor %}
