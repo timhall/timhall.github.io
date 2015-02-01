@@ -3,11 +3,8 @@ timeline:
     location: Working Remotely
     titles:
     - title: Software Developer
-      start_date: 
-        month: May
-        year: 2013
-      end_date:
-        name: Present
+      start_date: May 2013
+      end_date: Present
     type: professional
     blurb: 
     details:
@@ -49,19 +46,11 @@ timeline:
     location: "Cary, NC"
     titles:
     - title: Project Engineer
-      start_date:
-        month: January
-        year: 2013
-      end_date: 
-        month: May
-        year: 2013
+      start_date: January 2013
+      end_date: May 2013
     - title: Engineer
-      start_date: 
-        month: August
-        year: 2011
-      end_date: 
-        month: January
-        year: 2013
+      start_date: August 2011
+      end_date: January 2013
     type: professional
     blurb: 
     details:
@@ -101,12 +90,8 @@ timeline:
     location: "College Park, MD"
     titles:
     - title: Graduate Research Assistant
-      start_date:
-        month: August
-        year: 2009
-      end_date: 
-        month: August
-        year: 2011
+      start_date: August 2009
+      end_date: August 2011
     type: professional
     blurb: 
     details:
@@ -118,12 +103,8 @@ timeline:
     location: "Richmond, VA"
     titles:
     - title: Engineering Intern
-      start_date: 
-        month: May
-        year: 2008
-      end_date: 
-        month: August
-        year: 2009
+      start_date: May 2008
+      end_date: August 2009
     type: professional
     blurb: 
     details:

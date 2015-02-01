@@ -1,0 +1,54 @@
+---
+layout: default
+columns: 2
+title: Resume
+---
+
+<article class="resume">
+  {% for item in site.data.about.timeline %}
+    {% if item.type == "professional" %}
+      <section class="resume-item type-professional">
+        <span class="company">{{ item.company }}</span>
+        <span class="location">{{ item.location }}</span>
+        <ul class="titles">
+        {% for title in item.titles %}
+          <li>
+            <span class="title">{{ title.title }}</span>&mdash;
+            <time class="date start-date">{{ title.start_date }}</time>
+            <time class="date end-date">{{ title.end_date }}</time> 
+          </li>
+        {% endfor %}
+        </ul>
+        {% if item.blurb %}
+          <div class="blurb">
+            {{ item.blurb | markdownify }}
+          </div>
+        {% endif %}
+        <ul class="professional-details">
+          {% for detail in item.details %}
+            <li>{{ detail | markdownify }}</li>
+          {% endfor %}
+        </ul>
+      </section>
+    {% endif %}
+    {% if item.type == "project" %}
+      <section class="resume-item type-project">
+        <span class="project">{{ item.project }}</span>
+        {% if item.github %}
+          <iframe src="https://ghbtns.com/github-btn.html?user={{ item.github.user }}&repo={{ item.github.repo }}&type=star&count=true" 
+            class="github-star" frameborder="0" scrolling="0" width="170px" height="20px"></iframe>
+        {% endif %}
+        {% if item.blurb %}
+          <div class="blurb">
+            {{ item.blurb | markdownify }}
+          </div>
+        {% endif %}
+        {% if item.example %}
+          <div class="example">
+            {{ item.example | markdownify }}
+          </div>
+        {% endif %}
+      </section>
+    {% endif %}
+  {% endfor %}
+</article>
