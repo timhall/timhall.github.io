@@ -1,9 +1,13 @@
 timeline:
   - company: Cornerstone Systems NW
     location: Working Remotely
-    title: Software Developer
-    start_date: May 2013
-    end_date: Present
+    titles:
+    - title: Software Developer
+      start_date: 
+        month: May
+        year: 2013
+      end_date:
+        name: Present
     type: professional
     blurb: 
     details:
@@ -14,11 +18,27 @@ timeline:
     - "Create composable and configurable d3.chart system that dramatically simplifies the process of creating new chart types (Line, Bars, etc.) and allows rapid iteration of chart design and layout"
     - "Craft an asynchronous data layer for working with csv data in d3, including querying, caching, filtering, reducing, formatting, and other advanced behavior"
 
+  # - project: VBA-Web
+  #   type: project
+  #   blurb: Most-starred VBA project on GitHub (admittedly a dubious honor)
+
   - company: Nexant
     location: "Cary, NC"
-    title: Project Engineer <i class="larr">&larr;</i> Engineer
-    start_date: August 2011
-    end_date: May 2013
+    titles:
+    - title: Project Engineer
+      start_date:
+        month: March
+        year: 2013
+      end_date: 
+        month: May
+        year: 2013
+    - title: Engineer
+      start_date: 
+        month: August
+        year: 2011
+      end_date: 
+        month: March
+        year: 2013
     type: professional
     blurb: 
     details:
@@ -28,9 +48,14 @@ timeline:
 
   - company: University of Maryland - Advanced Manufacturing Lab
     location: "College Park, MD"
-    title: Graduate Research Assistant
-    start_date: August 2009
-    end_date: August 2011
+    titles:
+    - title: Graduate Research Assistant
+      start_date:
+        month: August
+        year: 2009
+      end_date: 
+        month: August
+        year: 2011
     type: professional
     blurb: 
     details:
@@ -38,11 +63,16 @@ timeline:
     - "Developed new mathematical models and software tools that applied machine learning, metamodeling, and image processing for understanding the manufacturability of novel injection-molded fiber-filled polymers that dramatically reduced analysis time and computational resources, are applicable to optimization and design exploration, and maintained minimal error"
     - "Designed experimental analyses that decreased the number of experimental simulations required for design verification, performed injection mold design and machining that balanced design and manufacturing considerations, and standardized microscope imaging and other data collection techniques"
 
-  - company: Dominion Power
+  - company: "Dominion Power, Performance Excellence"
     location: "Richmond, VA"
-    title: "Engineering Intern, Performance Excellence"
-    start_date: May 2008
-    end_date: August 2009
+    titles:
+    - title: Engineering Intern
+      start_date: 
+        month: May
+        year: 2008
+      end_date: 
+        month: August
+        year: 2009
     type: professional
     blurb: 
     details:

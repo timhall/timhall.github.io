@@ -3,23 +3,59 @@ layout: default
 title: Timeline
 ---
 
-<ul class="timeline">
+<article class="timeline">
   {% for item in site.data.about.timeline %}
     {% if item.type == "professional" %}
-      <li class="timeline-item type-professional">
+      <section class="timeline-item type-professional">
+        <i class="type-icon"></i>
+        <ul class="titles">
+        {% for title in item.titles %}
+          <li>
+            <span class="dates">
+              <time class="date start-date">
+                {% if title.start_date.name %}
+                <span class="date-name">{{ title.start_date.name }}</span>
+                {% else %}
+                <span class="date-month">{{ title.start_date.month }}</span>
+                <span class="date-year">{{ title.start_date.year }}</span>
+                {% endif %}
+              </time>
+              <span class="date-range">-</span>
+              <time class="date end-date">
+                {% if title.end_date.name %}
+                <span class="date-name">{{ title.end_date.name }}</span>
+                {% else %}
+                <span class="date-month">{{ title.end_date.month }}</span>
+                <span class="date-year">{{ title.end_date.year }}</span>
+                {% endif %}
+              </time>
+            </span>
+            <span class="title">{{ title.title }}</span>
+          </li>
+        {% endfor %}
+        </ul>
         <span class="company">{{ item.company }}</span>
         <span class="location">{{ item.location }}</span>
-        <span class="dates">
-          <time class="start-date">{{ item.start_date }}</time>
-          <time class="end-date">{{ item.end_date }}</time>
-        </span>
-        <span class="title">{{ item.title }}</span>
-        <ul class="details">
+        {% if item.blurb %}
+        <div class="blurb">
+          {{ item.blurb | markdownify }}
+        </div>
+        {% endif %}
+        <ul class="professional-details">
           {% for detail in item.details %}
             <li>{{ detail | markdownify }}</li>
           {% endfor %}
         </ul>
-      </li>
+      </section>
+    {% endif %}
+    {% if item.type == "project" %}
+      <section class="timeline-item type-project">
+        <i class="type-icon"></i>
+        <span class="project">{{ item.project }}</span>
+        <div class="blurb">
+          {{ item.blurb | markdownify }}
+        </div>
+      </section>
     {% endif %}
   {% endfor %}
-</ul>
+</article>

@@ -1,12 +1,66 @@
+$timeline-color: #ddd;
+$timeline-color-light: lighten($timeline-color, 8%);
+$timeline-gap: 28px;
+$timeline-border-width: 3px;
+$timeline-top-padding: 11px;
+$timeline-left-padding: 6px;
+$timeline-icon-width: 12px;
+$project-gap: 0px;
+$professional-color: $primary-color;
+$project-color: darken(#fc3, 10%);
+
 .timeline {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 5px 0 5px $timeline-gap;
+  border-left: solid $timeline-border-width $timeline-color-light;
 }
 
 .timeline-item {
+  position: relative;
+  border-left: solid $timeline-border-width $timeline-color;
+  padding-left: 14px;
+  margin-bottom: 20px;
+
+  &:before {
+    content: "";
+    position: absolute;
+    top: $timeline-top-padding;
+    height: $timeline-border-width;
+    background-color: $timeline-color-light;
+  }
+
   &.type-professional {
-    
+    border-left-color: $professional-color;
+
+    &:before {
+      left: -$timeline-gap - 2px;
+      width: $timeline-gap - $timeline-left-padding + 5px;
+    }
+    .type-icon {
+      left: -$timeline-gap - $timeline-icon-width + 2px;
+    }
+  }
+  &.type-project {
+    margin-left: $project-gap;
+    border-left-color: $project-color;
+
+    &:before {
+      left: -$timeline-gap - 2px - $project-gap;
+      width: $timeline-gap - $timeline-left-padding + 5px + $project-gap;
+    }
+    .type-icon {
+      left: -$timeline-gap - $timeline-icon-width + 2px - $project-gap;
+    }
+  }
+
+  .type-icon {
+    border-radius: 50%;
+    width: $timeline-icon-width;
+    height: $timeline-icon-width;
+    position: absolute;
+    top: 6px;
+    background-color: $timeline-color;
   }
 
   .company {
@@ -19,33 +73,84 @@
   }
 
   .location {
-    &:after {
-      content: ", ";
-    }
+    
   }
 
-  .dates {
+  .titles {
+    // @extend .clearfix;
+    list-style: none;
+    margin: 0 0 6px 0;
+    padding: 0;
 
-  }
+    & > li {
+      // float: left;
+      display: block;
+      // margin-left: 20px;
+      margin-top: 4px;
+      // text-align: center;
 
-  .start-date {
-
-  }
-
-  .end-date {
-    &:before {
-      content: " - ";
+      &:first-child {
+        margin-left: 0;
+      }
     }
   }
 
   .title {
     display: block;
+    // margin-top: 2px;
   }
 
-  .details {
+  .dates {
+    @extend .clearfix;
+  }
+
+  .date {
+    // height: 2.6em;
+    text-align: center;
+    float: left;
+  }
+
+  .date-name {
+    // line-height: 2.6em;
+  }
+  .date-month {
+    line-height: 1.0em;
+  }
+  .date-year {
+    line-height: 1.0em;
+    // display: block;
+  }
+  .date-range {
+    float: left;
+    // line-height: 2.6em;
+    padding: 0 4px;
+  }
+
+  .start-date {
+    
+  }
+
+  .end-date {
+
+  }
+
+  .blurb {
+    & > p:first-child {
+      margin-top: 0;
+    }
+  }
+
+  .professional-details {
+    padding-left: 1.5em;
+    list-style-type: disc;
+
     & > li > p {
       margin: 0;
     }
+  }
+
+  .project {
+    font-weight: bold;
   }
 }
 
