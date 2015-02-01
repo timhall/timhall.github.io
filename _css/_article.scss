@@ -4,7 +4,7 @@
 .article-header {
   @extend .container;
 
-  margin-top: 0.2em;
+  margin-top: 4px;
   padding-top: 10px;
   padding-bottom: 1em;
   background-color: #fff;
@@ -49,9 +49,10 @@
 
 .article-footer {
   @extend .container;
-  padding-top: 1.5em;
-  margin-bottom: 0.2em;
-  padding-bottom: 1.5em;
+  margin-bottom: 4px;
+  padding-top: 1.2em;
+  padding-bottom: 1.2em;
+  font-size: 0.9em;
   text-align: center;
   color: darken(#b2b2b2, 20%);
   background-color: #fff;

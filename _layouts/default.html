@@ -3,13 +3,11 @@ layout: blank
 ---
 <header class="article-header{% if page.columns %} two-column{% endif %}">
   <h1 class="article-title"><a class="logo" href="/">TH</a> {{ page.title }}</h1>
-  {{ if page.meta }}
-    <span class="article-meta">{{ page.meta }}</span>
-  {{ endif }}
+  <span class="article-meta">{% if page.meta %}{{ page.meta }}{% else %}{{ site.tagline }}{% endif %}</span>
 </header>
 <article class="article-content{% if page.columns %} two-column{% endif %}">
   {{ content }}
 </article>
 <footer class="article-footer{% if page.columns %} two-column{% endif %}">
-  Tim Hall - Pondering Engineering, Code, and Other Things
+  <a href="/">Tim Hall</a> - {{ site.tagline }}
 </footer>
