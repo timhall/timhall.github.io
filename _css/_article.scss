@@ -61,19 +61,19 @@
 // Media
 // ----------------------------------------------------- //
 
-@media only screen and (max-width: 45em) {
+@media only screen and (max-width: 720px) {
   .article-title {
     font-size: 1.6em;
   }
 }
 
-@media only screen and (min-width: 95em) {
+@media only screen and (min-width: 1500px) {
   .article-header.two-column, .article-content.two-column, .article-footer.two-column {
-    width: 90em;
+    width: 1400px;
   }
 
   .column {
-    width: 42em;
+    width: 650px;
 
     &.column-left {
       float: left;

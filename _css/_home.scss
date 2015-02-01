@@ -2,7 +2,7 @@
 // ----------------------------------------------------- //
 
 .home-blurb {
-  font-size: 1.5em;
+  font-size: 1.1em;
   text-align: center;
   color: darken($primary-color, 5%);
 }
@@ -20,7 +20,7 @@
 // Media
 // ----------------------------------------------------- //
 
-@media only screen and (max-width: 45em) {
+@media only screen and (max-width: 720px) {
   .home-blurb {
     font-size: 1.2em;
   }

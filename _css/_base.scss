@@ -82,7 +82,7 @@ pre {
 // Media
 // ----------------------------------------------------- //
 
-@media only screen and (max-width: 45em) {
+@media only screen and (max-width: 720px) {
   html {
     font-size: 0.95em;
   }
@@ -92,8 +92,9 @@ pre {
     padding-right: 10px;
   }
 }
-@media only screen and (min-width: 50em) {
+// TODO Handle padding better
+@media only screen and (min-width: 800px) {
   .container {
-    width: 45em;
+    width: 720px;
   }
 }
