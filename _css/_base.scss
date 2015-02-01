@@ -2,18 +2,18 @@
 // ----------------------------------------------------- //
 
 html {
-  background: $primary-color;
+  background: $bg-color;
 }
 
 body {
   -webkit-font-smoothing: antialiased;
   overflow-y: scroll;
   line-height: 1.5;
-  font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+  font-family: $font-family;
 }
 
 a {
-  color: darken($primary-color, 5%);
+  color: $link-color;
   text-decoration: none;
   border-bottom: dashed 1px;
   border-color: rgb(18, 138, 168);
