@@ -51,6 +51,18 @@ experience:
     - "Created a monthly performance reporting tool which programmatically collected data from a multitude of sources and performed analyses to determine itemized, as well as overall, plant performance and efficiency. This tool considerably expanded the amount and quality of performance data available to power plant management and engineers and was particularly useful for prioritizing process improvements and identifying maintenance issues"
     - "Maintained and updated established analysis tools to utilize modern software, usability, and engineering techniques which significantly improved execution speed, reliability, and ease-of-use"
 
+education:
+  - school: University of Maryland
+    location: "College Park, MD"
+    graduation_date: August 2011
+    degrees:
+    - "Master of Science, Mechanical Engineering"
+  - school: Virginia Commonwealth University
+    location: "Richmond, VA"
+    graduation_date: May 2009
+    degrees:
+    - "Bachelor of Science, Mechanical Engineering, Magna Cum Laude"
+    - "Minor, Piano Performance"
 projects:
   - project: d3.chart.compose
     blurb: |

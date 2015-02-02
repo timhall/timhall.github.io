@@ -2,24 +2,19 @@ $resume-color: #ddd;
 $resume-border-width: 3px;
 $professional-color: $primary-color;
 $project-color: darken(#fc3, 10%);
+$education-color: #c00;
 
 .resume {
   
 }
 
 .resume-section {
-  @extend .column;
-  @extend .clearfix;
-
-  &.type-experience {
-    @extend .column-left;
-  }
-  &.type-projects {
-    @extend .column-right;
-  }
-
   h2 {
     margin: 0.2em 0 0.6em 0;
+  }
+
+  &.type-education h2 {
+    margin-top: 1em;
   }
 }
 
@@ -37,8 +32,11 @@ $project-color: darken(#fc3, 10%);
   .type-projects & {
     border-left-color: $project-color;
   }
+  .type-education & {
+    border-left-color: $education-color;
+  }
 
-  .company, .project {
+  .company, .project, .school {
     font-weight: bold;
   }
 
@@ -107,13 +105,26 @@ $project-color: darken(#fc3, 10%);
     vertical-align: sub;
     margin-left: 4px;
   }
+
+  .degrees {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .degree {
+    
+  }
 }
 
 // Media
 // ----------------------------------------------------- //
 
 @media only screen and (max-width: 720px) {
-  .resume-section:nth-child(2) h2 {
+  .resume-section h2 {
     margin-top: 1em;
+  }
+  .resume-section.type-experience h2 {
+    margin-top: 0.2;
   }
 }
