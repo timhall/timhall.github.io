@@ -36,8 +36,8 @@ title: Resume
   <section class="resume-section type-projects">
     <h2>Projects</h2>
     {% for item in site.data.resume.projects %}
-      <section class="resume-item">
-        <span class="project">{{ item.project }}</span>
+      <section class="resume-item" id="/projects/{{ item.project | dasherize }}">
+        <a class="project" {% if item.github %}href="https://github.com/{{ github.user }}/{{ github.repo }}"{% endif %}>{{ item.project }}</a>
         {% if item.github %}
           <iframe src="https://ghbtns.com/github-btn.html?user={{ item.github.user }}&repo={{ item.github.repo }}&type=star&count=true" 
             class="github-star" frameborder="0" scrolling="0" width="100px" height="20px"></iframe>
