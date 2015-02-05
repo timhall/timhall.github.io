@@ -7,7 +7,7 @@ experience:
       end_date: Present
     blurb: 
     details:
-    - "Work collaboratively as part of a remote team of developers on a large Backbone.js application, iteratively developing an advanced system that condenses extensive information and tasks into a focused, simple interface"
+    - "Work collaboratively as part of a remote team of developers on large Backbone.js applications, iteratively developing an advanced system that condenses extensive information and tasks into a focused, simple interface"
     - "Methodically update legacy code into maintainable components, including converting an existing native-to-client-side shim from Python to Node.js"
     - "Investigate and resolve bugs, often involving transient or low-level errors, introducing test cases to avoid future regressions and documenting or removing module couplings to reduce unforeseen interactions"
     - "Implement performance improvements such as utilizing caching or incremental updates for slow-running queries and applying asynchronous events to handle blocking or poorly-performing components"
