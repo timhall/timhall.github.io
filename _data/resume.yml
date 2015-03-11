@@ -5,7 +5,7 @@ experience:
     - title: Software Developer
       start_date: May 2013
       end_date: Present
-    blurb: 
+    blurb:
     details:
     - "Work collaboratively as part of a remote team of developers on large Backbone.js applications, iteratively developing an advanced system that condenses extensive information and tasks into a focused, simple interface"
     - "Methodically update legacy code into maintainable components, including converting an existing native-to-client-side shim from Python to Node.js"
@@ -22,18 +22,18 @@ experience:
     - title: Engineer
       start_date: August 2011
       end_date: January 2013
-    blurb: 
+    blurb:
     details:
     - "Coordinated with a distributed team to lead development of web-based energy auditing tools to modernize existing spreadsheets tools and introduce new offerings, using HTML5, CSS3, Knockout.js and Node.js to quickly build dynamic web applications"
     - "Developed advanced engineering tools and process automation using Excel VBA and leveraging REST APIs (including Salesforce, Trello, and others) to standardize and improve engineering calculations and processing for lighting, HVAC, insulation, and weather. (See [VBA-Web](#/projects/VBA-Web) for details)"
-    - "Implment test-driven development framework for customer-facing and internal spreadsheets to reduce product maintenance, allow faster iteration of new features, and ensure accurate energy savings and rebates. (See [Excel-TDD](#/projects/Excel-TDD) for details)"
+    - "Implement test-driven development framework for customer-facing and internal spreadsheets to reduce product maintenance, allow faster iteration of new features, and ensure accurate energy savings and rebates. (See [Excel-TDD](#/projects/Excel-TDD) for details)"
   - company: University of Maryland - Advanced Manufacturing Lab
     location: "College Park, MD"
     titles:
     - title: Graduate Research Assistant
       start_date: August 2009
       end_date: August 2011
-    blurb: 
+    blurb:
     details:
     - "Collaborated with a multi-functional product development team on the design of advanced polymer heat exchangers, including establishing and maintaining individual and overall project schedules that ensure continued progress, prioritizing project tasks and goals, and composing technical reports, articles, and presentations"
     - "Developed new mathematical models and software tools that applied machine learning, metamodeling, and image processing for understanding the manufacturability of novel injection-molded fiber-filled polymers that dramatically reduced analysis time and computational resources, are applicable to optimization and design exploration, and maintained minimal error"
@@ -45,7 +45,7 @@ experience:
     - title: Engineering Intern
       start_date: May 2008
       end_date: August 2009
-    blurb: 
+    blurb:
     details:
     - "Developed software applications using Visual Basic and Excel to analyze historical data, identify performance trends, and automatically offer predictions and recommendations for improving efficiency of primary power plant components, including centrifugal pumps, condensers, and turbines. These tools successfully identified critical problems, often weeks or months before they became apparent to plant personnel, and facilitated preventive and required maintenance in order to ensure peak performance"
     - "Created a monthly performance reporting tool which programmatically collected data from a multitude of sources and performed analyses to determine itemized, as well as overall, plant performance and efficiency. This tool considerably expanded the amount and quality of performance data available to power plant management and engineers and was particularly useful for prioritizing process improvements and identifying maintenance issues"
@@ -66,7 +66,7 @@ education:
 projects:
   - project: d3.chart.compose
     blurb: |
-      (To be released in 2015) Advanced chart layout and composition for [d3.chart](http://misoproject.com/d3-chart/). Was able to quickly create dynamic charts from common chart components for transferring scientific papers to the web. 
+      (To be released in 2015) Advanced chart layout and composition for [d3.chart](http://misoproject.com/d3-chart/). Was able to quickly create dynamic charts from common chart components for transferring scientific papers to the web.
     example: |
       ```js
       var chart = d3.select('#id')
