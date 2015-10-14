@@ -125,6 +125,11 @@ $education-color: #c00;
     margin-top: 1em;
   }
   .resume-section.type-experience h2 {
-    margin-top: 0.2;
+    margin-top: 0.2em;
+  }
+}
+@media only screen and (max-width: 1500px) {
+  .resume-section.type-projects h2 {
+    margin-top: 1em;
   }
 }

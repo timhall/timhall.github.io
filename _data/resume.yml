@@ -11,7 +11,7 @@ experience:
     - "Methodically update legacy code into maintainable components, including converting an existing native-to-client-side shim from Python to Node.js"
     - "Investigate and resolve bugs, often involving transient or low-level errors, introducing test cases to avoid future regressions and documenting or removing module couplings to reduce unforeseen interactions"
     - "Implement performance improvements such as utilizing caching or incremental updates for slow-running queries and applying asynchronous events to handle blocking or poorly-performing components"
-    - "Create composable and configurable d3.chart system that dramatically simplifies the process of creating new chart types (Line, Bars, etc.) and allows rapid iteration of chart design and layout (See [d3.chart.compose](#/projects/d3.chart.compose) for details)"
+    - "Create composable and configurable d3 chart system that dramatically simplifies the process of creating new chart types (Line, Bars, etc.) and allows rapid iteration of chart design and layout (See [d3.compose](#/projects/d3.compose) for details)"
     - "Craft an asynchronous data layer for working with csv data in d3, including querying, caching, filtering, reducing, formatting, and other advanced behavior"
   - company: Nexant
     location: "Cary, NC"
@@ -24,7 +24,7 @@ experience:
       end_date: January 2013
     blurb:
     details:
-    - "Coordinated with a distributed team to lead development of web-based energy auditing tools to modernize existing spreadsheets tools and introduce new offerings, using HTML5, CSS3, Knockout.js and Node.js to quickly build dynamic web applications"
+    - "Coordinated with a distributed team to lead development of web-based energy auditing tools to modernize existing spreadsheet tools and introduce new offerings, using HTML5, CSS3, Knockout.js and Node.js to quickly build dynamic web applications"
     - "Developed advanced engineering tools and process automation using Excel VBA and leveraging REST APIs (including Salesforce, Trello, and others) to standardize and improve engineering calculations and processing for lighting, HVAC, insulation, and weather. (See [VBA-Web](#/projects/VBA-Web) for details)"
     - "Implement test-driven development framework for customer-facing and internal spreadsheets to reduce product maintenance, allow faster iteration of new features, and ensure accurate energy savings and rebates. (See [Excel-TDD](#/projects/Excel-TDD) for details)"
   - company: University of Maryland - Advanced Manufacturing Lab
@@ -64,37 +64,46 @@ education:
     - "Bachelor of Science, Mechanical Engineering, Magna Cum Laude"
     - "Minor, Piano Performance"
 projects:
-  - project: d3.chart.compose
+  - project: d3.compose
+    github:
+      user: CSNW
+      repo: d3.compose
     blurb: |
-      (To be released in 2015) Advanced chart layout and composition for [d3.chart](http://misoproject.com/d3-chart/). Was able to quickly create dynamic charts from common chart components for transferring scientific papers to the web.
+      Compose complex, data-driven visualizations from reusable charts and components with d3. Was able to quickly create dynamic charts from common chart components for transferring scientific papers to the web.
     example: |
       ```js
-      var chart = d3.select('#id')
-        .chart('Compose', function(data) {
-          // Prepare data and scales
-          var scales = {
-            x: {data: data.input, key: 'x'},
-            y: {data: data.input, key: 'y'},
-            y2: {data: data.output, key: 'y'}
-          };
+      var chart = d3.select('#id').chart('Compose', function(data) {
+        // Prepare data and scales
+        var scales = {
+          x: {data: data.input, key: 'x'},
+          y: {data: data.input, key: 'y'},
+          y2: {data: data.output, key: 'y'}
+        };
 
-          // Compose chart from Line and Bars charts, with x, y, and y2 axes
-          // d3.chart.compose performs layout and wiring
-          return {
-            charts: {
-              bars: {type: 'Bars', data: data.input, xScale: scales.x, yScale: scales.y},
-              line: {type: 'Line', data: data.output, xScale: scale.x, yScale: scales.y2}
-            },
-            axes: {
-              x: {scale: scales.x, title: 'Year', position: 'right'},
-              y: {scale: scales.y, title: 'Input', position: 'left'},
-              y2: {scale: scales.y2, title: 'Output', position: 'right'}
-            },
-            title: 'Input vs. Output by Year'
-          };
-        });
+        // Set up charts (bars and lines) and components (x, y, and y2 axes)
+        var charts = [
+          d3c.bars('bars', {data: data.input, xScale: scales.x, yScale: scales.y});
+          d3c.lines('lines', {data: data.output, xScale: scales.x, yScale: scales.y2});
+        ];
 
-      chart.draw({input: [], output: []});
+        var xAxis = d3c.axis('xAxis', {scale: scales.x});
+        var xAxisTitle = d3c.axisTitle('Year');
+        var yAxis = d3c.axis('yAxis', {scale: scales.y});
+        var yAxisTitle = d3c.axisTitle('Input');
+        var y2Axis = d3c.axis('y2Axis', {scale: scales.y2});
+        var y2AxisTitle = d3c.axisTitle('Output');
+        var title = d3c.title('Input vs. Output by Year');
+
+        // Return layout of charts and components
+        return [
+          title,
+          [yAxisTitle, yAxis, d3c.layered(charts), y2Axis, y2AxisTitle],
+          xAxis,
+          xAxisTitle
+        ];
+      });
+
+      chart.draw({input: [/* ... */], output: [/* ... */]});
       ```
   - project: VBA-Web
     github:
