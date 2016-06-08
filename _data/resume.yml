@@ -112,7 +112,7 @@ projects:
     blurb: |
       The most-starred VBA project on GitHub (admittedly a dubious honor) that gives structured web queries to Excel, Access, etc. for Windows and Mac (quite an accomplishment, since there was previously no straighforward way of accessing web services on Mac). Extracted from work coordinating Salesforce, Trello, and Ducksboard from Excel.
     example: |
-      ```VB.net
+      ```vb
       Dim Client As New WebClient
       Client.BaseUrl = "https://api.example.com/"
 
@@ -163,7 +163,7 @@ projects:
     blurb: |
       I liked testing with [Jasmine](http://jasmine.github.io/) so much, I ported it to Excel! Extracted from a system for verifying spreadsheets, Excel-TDD improved confidence in introducing new features and reduced critical errors in spreadsheets that were released across the country.
     example: |
-      ```VB.net
+      ```vb
       Dim Specs As New SpecSuite
       Specs.Description = "Test Workbook"
 
