@@ -1,6 +1,7 @@
 name: Tim Hall
 tagline: "Creative code and engineering"
 url: http://timhall.github.io
+repository: timhall/timhall.github.io
 
 defaults:
 - scope:
@@ -11,7 +12,7 @@ defaults:
     path: "articles"
     type: "pages"
   values:
-    layout: "articles"
+    layout: "article"
 
 exclude:
 - Gemfile
@@ -35,4 +36,6 @@ lsi: false
 safe: true
 highlighter: rouge
 gist:
- noscript: false
+  noscript: false
+kramdown:
+  math_engine: mathjax

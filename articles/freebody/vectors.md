@@ -1,5 +1,4 @@
 ---
-layout: article
 title: Vectors Everywhere
 meta: Nov. 27, 2012
 scripts: |
