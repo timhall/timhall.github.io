@@ -17,7 +17,7 @@ defaults:
 exclude:
 - Gemfile
 - Gemfile.lock
-- readme.md
+- README.md
 
 sass:
   style: :compressed

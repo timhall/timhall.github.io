@@ -2,7 +2,7 @@
 layout: blank
 ---
 <header class="article-header{% if page.columns %} two-column{% endif %}">
-  <h1 class="article-title"><a class="logo" href="/">TH</a> {{ page.title }}</h1>
+  <h1 class="article-title"><a class="logo" href="{{ site.baseurl }}/">TH</a> {{ page.title }}</h1>
   <span class="article-meta">{% if page.meta %}{{ page.meta }}{% else %}{{ site.tagline }}{% endif %}</span>
 </header>
 <article class="article-content{% if page.columns %} two-column{% endif %}">
