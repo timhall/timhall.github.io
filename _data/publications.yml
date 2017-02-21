@@ -1,0 +1,11 @@
+- name: Master's Thesis
+  link: //drum.lib.umd.edu/handle/1903/12027
+  description: Manufacturability Analysis of Thermally-Enhanced Polymer Composite Heat Exchangers
+- name: DETC 2011 Conference Paper
+  link: /publications/A_New_Approach_for_Explicit_Construction_of_Moldability_-_Tim_Hall.pdf
+  description: A New Approach for Explicit Construction of Moldability Based Feasibility Boundary for Polymer Heat Exchangers
+  local: true
+- name: MSEC 2012 Conference Paper
+  link: /publications/Development_of_a_Fiber_Orientation_Measurement_Methodology_-_Tim_Hall.pdf
+  description: Development of a Fiber Orientation Measurement Methodology for Injection Molded Thermally-Enhanced Polymers
+  local: true

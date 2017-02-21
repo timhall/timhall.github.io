@@ -13,28 +13,14 @@ title: Tim Hall
 
 <h2>Projects</h2>
 <ul class="link-list">
+  {% for project in site.data.projects %}
+    <li>
+      <a href="{{ project.link }}" target="_blank">{{ project.name }}</a>
+      {% if project.description %}<p>{{ project.description }}</p>{% endif %}
+    </li>
+  {% endfor %}
   <li>
-    <a href="https://github.com/CSNW/d3.compose" target="_blank">d3.compose</a>
-    <p>Compose complex, data-driven visualizations from reusable charts and components with d3.</p>
-  </li>
-  <li>
-    <a href="https://github.com/VBA-tools/VBA-Web" target="_blank">VBA-Web</a>
-    <p>Why leave Excel out of the fun of webservices</p>
-  </li>
-  <li>
-    <a href="https://github.com/VBA-tools/Excel-TDD" target="_blank">Excel-TDD</a>
-    <p>Liked TDD so much, I ported Jasmine to Excel</p>
-  </li>
-  <li>
-    <a href="https://github.com/timhall/freebody.js" target="_blank">Freebody.js</a>
-    <p>Fun little physics library based on freebody diagrams</p>
-  </li>
-  <li>
-    <a href="https://github.com/timhall/knockout.collection" target="_blank">knockout.collection</a>
-    <p>Observable collection helpers for knockout, including filter and map</p>
-  </li>
-  <li>
-    <a href="https://github.com/timhall" target="_blank">and more!</a>
+    <a href="https://github.com/timhall/" target="_blank">and more!</a>
   </li>
 </ul>
 
@@ -45,16 +31,10 @@ title: Tim Hall
 
 <h2>Publications</h2>
 <ul class="link-list">
-  <li>
-    <a href="//drum.lib.umd.edu/handle/1903/12027" target="_blank">Master's Thesis</a>
-    <p>Manufacturability Analysis of Thermally-Enhanced Polymer Composite Heat Exchangers</p>
-  </li>
-  <li>
-    <a href="/publications/A_New_Approach_for_Explicit_Construction_of_Moldability_-_Tim_Hall.pdf" target="_blank">DETC 2011 Conference Paper</a>
-    <p>A New Approach for Explicit Construction of Moldability Based Feasibility Boundary for Polymer Heat Exchangers</p>
-  </li>
-  <li>
-    <a href="/publications/Development_of_a_Fiber_Orientation_Measurement_Methodology_-_Tim_Hall.pdf" target="_blank">MSEC 2012 Conference Paper</a>
-    <p>Development of a Fiber Orientation Measurement Methodology for Injection Molded Thermally-Enhanced Polymers</p>
-  </li>
+  {% for project in site.data.publications %}
+    <li>
+      <a href="{% if project.local %}{{ site.baseurl }}{% endif %}{{ project.link }}" target="_blank">{{ project.name }}</a>
+      {% if project.description %}<p>{{ project.description }}</p>{% endif %}
+    </li>
+  {% endfor %}
 </ul>
