@@ -16,6 +16,9 @@
     {{ content }}
 
     {{ page.scripts }}
+    {% if page.mathjax %}
+      <script src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    {% endif %}
     
     <script type="text/javascript">
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

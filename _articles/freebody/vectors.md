@@ -1,21 +1,7 @@
 ---
 title: Vectors Everywhere
 meta: Nov. 27, 2012
-scripts: |
-  <script type="text/x-mathjax-config">
-      // Configure MathJax to work better with Markdown (<code> tags)
-      MathJax.Hub.Config({
-        tex2jax: { skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'] },
-        showProcessingMessages: false
-      });
-      MathJax.Hub.Queue(function() {
-        var all = MathJax.Hub.getAllJax(), i;
-        for(i = 0; i < all.length; i += 1) {
-          all[i].SourceElement().parentNode.className += ' has-jax';
-        }
-      });
-  </script>
-  <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+mathjax: true
 ---
 Vectors are one of the most fundamental parts of physics and are a compact way to say quite a bit.Forces, velocity, acceleration; they can all be represented by vectors. We'll get into the math of vectors below, but first a little overview. Fundamentally, vectors are used to represent things (forces, velocity, etc.) as having a magnitude and direction and from this we can figure out all sorts of things. Rather than adjusting x- and y-components with a change in direction, only the direction needs to be changed and similarly for magnitude. Two things can say quite a bit, it's kinda nifty.
 
@@ -106,11 +92,12 @@ Now to get a little into the nitty gritty of vector math. One of the things that
 
 1.  We have a vector with a defined magnitude and angle
 2.  In order to determine the x- and y-components, we treat the magnitude as the hypotenuse of the triangle
-3.  With the triangle drawn, we can simply use sin and cos to find the x- and y-components: 
-    `\[\begin{aligned} 
+3.  With the triangle drawn, we can simply use sin and cos to find the x- and y-components:
+
+    $$\begin{aligned} 
     x & = magnitude \times\cos(angle) \\ 
     y & = magnitude \times\sin(angle) 
-    \end{aligned} \]`
+    \end{aligned}$$
 
 Let's plug this in:
 
@@ -137,10 +124,10 @@ Setting the magnitude and angle based on the x- and y-components requires a litt
 
 My vote for what is the expected behavior is to keep the opposite component fixed and adjust the magnitude and angle. By setting the x- or y-component, it is expected that the magnitude and angle are intrinsically going to change. Using the pythagorean theorem and a little more trig:
 
-`\[\begin{aligned} 
+$$\begin{aligned} 
 magnitude & = \sqrt{x^2 \times y^2} \\
 angle & = atan(y/x)
-\end{aligned}\]`
+\end{aligned}$$
 
 So let's finish up the Vector class:
 
