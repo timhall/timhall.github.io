@@ -43,7 +43,7 @@ Installing the add-in would add items to the ribbon for unlocking the credential
 Forms:
 
 1. Unlock: User enters the encryption key (password) to unlock the credential manager
-2. Request Permissions: Document requests permissions to access certain groups in the credential manager
+2. Request Permissions: Document requests permissions to access certain scopes in the credential manager
 3. View/Edit Items: User can view all items in the credential manager, make changes to the items, and delete all items
 
 ### API
@@ -53,24 +53,24 @@ The scope is required due to the fact that the credential manager stores values 
 Scopes allow values to be shared between documents, but this requires explicitly getting user permission to access the scope since any document could attempt to access it.
 
 ```vb
-' The Group ID can be unique to the application/document
+' The Scope ID can be unique to the application/document
 ' or shared between a set of applications/documents/company
-Private Const GroupId As String = "ABC Company Inc."
+Private Const ScopeId As String = "ABC Company Inc."
 
 Sub MakeRequest
   ' Request permissions to view/edit the values stored for "ABC Company Inc."
   ' and then load stored Google API Key
   Dim GoogleApiKey As String
-  If CredentialManager.HasPermission(GroupId) Then
-    GoogleApiKey = CredentialManager(GroupId)("GoogleApiKey")
+  If CredentialManager.HasPermission(ScopeId) Then
+    GoogleApiKey = CredentialManager(ScopeId)("GoogleApiKey")
   End If
   
   If GoogleApiKey = "" Then
     GoogleApiKey = InputBox("Enter Google API Key")
     
     ' Note: HasPermission is cached here (user is only prompted on first attempt)
-    If CredentialManager.HasPermission(GroupId) Then
-      CredentialManager(GroupId)("GoogleApiKey") = GoogleApiKey
+    If CredentialManager.HasPermission(ScopeId) Then
+      CredentialManager(ScopeId)("GoogleApiKey") = GoogleApiKey
     End If
   End If
   
