@@ -25,13 +25,18 @@ title: Tim Hall
 </ul>
 
 <h2>Articles</h2>
-<ul class="link-list">
+<ul class="link-list mod-articles">
   {% for article in site.articles %}
     {% unless article.draft %}
       <li>
         <a href="{{ article.url }}">{{ article.title }}</a>
       </li>
     {% endunless %}
+  {% endfor %}
+  {% for article in site.data.articles %}
+    <li>
+      <a href="{{ article.url }}">{{ article.title }}</a>{% if article.site %} <span class="article-site">[{{article.site}}]{% endif %}
+    </li>
   {% endfor %}
 </ul>
 

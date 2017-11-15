@@ -15,6 +15,16 @@
   p {
     margin-top: 0;
   }
+
+  &.mod-articles {
+    li {
+      margin-bottom: 0.4em;
+    }
+  }
+}
+
+.article-site {
+  color: #888;
 }
 
 // Media
