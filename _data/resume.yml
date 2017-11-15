@@ -26,7 +26,7 @@ experience:
     details:
     - "Coordinated with a distributed team to lead development of web-based energy auditing tools to modernize existing spreadsheet tools and introduce new offerings, using HTML5, CSS3, Knockout.js and Node.js to quickly build dynamic web applications"
     - "Developed advanced engineering tools and process automation using Excel VBA and leveraging REST APIs (including Salesforce, Trello, and others) to standardize and improve engineering calculations and processing for lighting, HVAC, insulation, and weather. (See [VBA-Web](#/projects/VBA-Web) for details)"
-    - "Implement test-driven development framework for customer-facing and internal spreadsheets to reduce product maintenance, allow faster iteration of new features, and ensure accurate energy savings and rebates. (See [Excel-TDD](#/projects/Excel-TDD) for details)"
+    - "Implement test-driven development framework for customer-facing and internal spreadsheets to reduce product maintenance, allow faster iteration of new features, and ensure accurate energy savings and rebates. (See [VBA-TDD](#/projects/VBA-TDD) for details)"
   - company: University of Maryland - Advanced Manufacturing Lab
     location: "College Park, MD"
     titles:
@@ -156,12 +156,12 @@ projects:
       // - results are patched, making redraws occur only as-needed
       // - results are cached to avoid unneccesary re-evaluations
       ```
-  - project: Excel-TDD
+  - project: VBA-TDD
     github:
       user: VBA-tools
-      repo: Excel-TDD
+      repo: VBA-TDD
     blurb: |
-      I liked testing with [Jasmine](http://jasmine.github.io/) so much, I ported it to Excel! Extracted from a system for verifying spreadsheets, Excel-TDD improved confidence in introducing new features and reduced critical errors in spreadsheets that were released across the country.
+      I liked testing with [Jasmine](http://jasmine.github.io/) so much, I ported it to Excel! Extracted from a system for verifying spreadsheets, VBA-TDD improved confidence in introducing new features and reduced critical errors in spreadsheets that were released across the country.
     example: |
       ```vb
       Dim Specs As New SpecSuite
