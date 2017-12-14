@@ -8,11 +8,12 @@ experience:
     blurb:
     details:
     - "Work collaboratively as part of a remote team of developers on large Backbone.js applications, iteratively developing an advanced system that condenses extensive information and tasks into a focused, simple interface"
+    - "Lead a developer experience initiative with aims of unifying and modernizing internal build tooling, testing, and development processes to leverage sharing across teams and improve code quality and iteration speed"
+    - "Create composable and configurable d3 chart system that dramatically simplifies the process of creating new chart types (Line, Bars, etc.) and allows rapid iteration of chart design and layout (See [d3.compose](#/projects/d3.compose) for details)"
+    - "Craft an asynchronous data layer for working with csv data in d3, including querying, caching, filtering, reducing, formatting, and other advanced behavior"
     - "Methodically update legacy code into maintainable components, including converting an existing native-to-client-side shim from Python to Node.js"
     - "Investigate and resolve bugs, often involving transient or low-level errors, introducing test cases to avoid future regressions and documenting or removing module couplings to reduce unforeseen interactions"
     - "Implement performance improvements such as utilizing caching or incremental updates for slow-running queries and applying asynchronous events to handle blocking or poorly-performing components"
-    - "Create composable and configurable d3 chart system that dramatically simplifies the process of creating new chart types (Line, Bars, etc.) and allows rapid iteration of chart design and layout (See [d3.compose](#/projects/d3.compose) for details)"
-    - "Craft an asynchronous data layer for working with csv data in d3, including querying, caching, filtering, reducing, formatting, and other advanced behavior"
   - company: Nexant
     location: "Cary, NC"
     titles:
