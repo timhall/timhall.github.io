@@ -1,4 +1,5 @@
 name: Tim Hall
+title: Tim Hall
 tagline: Creative code and engineering
 url: http://timhall.github.io
 repository: timhall/timhall.github.io
@@ -30,12 +31,14 @@ sass:
   sass_dir: _css
 
 # Default github-pages configuation
+encoding: UTF-8
 kramdown:
   input: GFM
   hard_wrap: false
-gems:
-  - jekyll-coffeescript
-  - jekyll-paginate
+future: true
+jailed: false
+theme: jekyll-theme-primer
+gfm_quirks: paragraph_end
 
 # Unchangable github-pages configuration
 lsi: false
@@ -45,3 +48,4 @@ gist:
   noscript: false
 kramdown:
   math_engine: mathjax
+  syntax_highlighter: rouge
