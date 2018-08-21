@@ -7,13 +7,11 @@ experience:
       end_date: Present
     blurb:
     details:
-    - "Work collaboratively as part of a remote team of developers on large Backbone.js applications, iteratively developing an advanced system that condenses extensive information and tasks into a focused, simple interface"
-    - "Lead a developer experience initiative with aims of unifying and modernizing internal build tooling, testing, and development processes to leverage sharing across teams and improve code quality and iteration speed"
-    - "Create composable and configurable d3 chart system that dramatically simplifies the process of creating new chart types (Line, Bars, etc.) and allows rapid iteration of chart design and layout (See [d3.compose](#/projects/d3.compose) for details)"
-    - "Craft an asynchronous data layer for working with csv data in d3, including querying, caching, filtering, reducing, formatting, and other advanced behavior"
-    - "Methodically update legacy code into maintainable components, including converting an existing native-to-client-side shim from Python to Node.js"
-    - "Investigate and resolve bugs, often involving transient or low-level errors, introducing test cases to avoid future regressions and documenting or removing module couplings to reduce unforeseen interactions"
-    - "Implement performance improvements such as utilizing caching or incremental updates for slow-running queries and applying asynchronous events to handle blocking or poorly-performing components"
+    - "Work collaboratively as part of a remote team of developers on large React, d3, and Backbone.js applications, developing advanced systems that condense information and tasks into focused, simple interfaces"
+    - "Lead a developer experience initiative that unified and modernized internal build tooling, testing, and development processes to aid sharing across teams, improve code quality, and increase iteration speed"
+    - "Create composable and configurable charting system that dramatically simplifies the process of creating new charts and allows rapid iteration of chart design and layout (See [d3.compose](#/projects/d3.compose) for details)"
+    - "Design and build an asynchronous data layer for working with csv data, including querying, caching, and advanced processing"
+    - "Create a reusable component library with React, Backbone, and d3 components for bootstrapping new projects and sharing best practices"
   - company: Nexant
     location: "Cary, NC"
     titles:
@@ -73,27 +71,26 @@ projects:
       Compose complex, data-driven visualizations from reusable charts and components with d3. Was able to quickly create dynamic charts from common chart components for transferring scientific papers to the web.
     example: |
       ```js
-      var chart = d3.select('#id').chart('Compose', function(data) {
+      const chart = d3.select('#id').chart('Compose', data => {
         // Prepare data and scales
-        var scales = {
-          x: {data: data.input, key: 'x'},
-          y: {data: data.input, key: 'y'},
-          y2: {data: data.output, key: 'y'}
-        };
+        const { input, output } = data;
+        const xScale = { data: input, key: 'x' };
+        const yScale = { data: input, key: 'y' };
+        const y2Scale = { data: output, key: 'y' };
 
         // Set up charts (bars and lines) and components (x, y, and y2 axes)
-        var charts = [
-          d3c.bars('bars', {data: data.input, xScale: scales.x, yScale: scales.y});
-          d3c.lines('lines', {data: data.output, xScale: scales.x, yScale: scales.y2});
+        const charts = [
+          d3c.bars('bars', { data: input, xScale, yScale });
+          d3c.lines('lines', { data: output, xScale, yScale: y2Scale });
         ];
 
-        var xAxis = d3c.axis('xAxis', {scale: scales.x});
-        var xAxisTitle = d3c.axisTitle('Year');
-        var yAxis = d3c.axis('yAxis', {scale: scales.y});
-        var yAxisTitle = d3c.axisTitle('Input');
-        var y2Axis = d3c.axis('y2Axis', {scale: scales.y2});
-        var y2AxisTitle = d3c.axisTitle('Output');
-        var title = d3c.title('Input vs. Output by Year');
+        const xAxis = d3c.axis('xAxis', { scale: xScale });
+        const xAxisTitle = d3c.axisTitle('Year');
+        const yAxis = d3c.axis('yAxis', { scale: yScale });
+        const yAxisTitle = d3c.axisTitle('Input');
+        const y2Axis = d3c.axis('y2Axis', { scale: y2Scale });
+        const y2AxisTitle = d3c.axisTitle('Output');
+        const title = d3c.title('Input vs. Output by Year');
 
         // Return layout of charts and components
         return [
@@ -105,6 +102,62 @@ projects:
       });
 
       chart.draw({input: [/* ... */], output: [/* ... */]});
+      ```
+  - project: svelte-apollo
+    github:
+      user: timhall
+      repo: svelte-apollo
+    blurb: |
+      Connect Svelte components to GraphQL using a simple observable interface and minimal wrapper around Apollo GraphQL.
+    example: |
+      ```html
+      {#await books}
+        Loading...
+      {:then result}
+        {#each result.data.books as book}
+          {book.title} by {book.author.name}
+        {/each}
+      {:catch error}
+        Error: {error}
+      {/await}
+
+      <form on:submit="create()">
+        <h2>New Book<h2>
+
+        <label for="title">Title</label>
+        <input type="text" id="title" bind:value=title />
+        
+        <label for="author">Author</label> 
+        <input type="text" id="author" bind:value=author />
+
+        <button type="submit">Add Book</button>
+      </form>
+
+      <script>
+        import { query, mutation, connect } from 'svelte-apollo'; 
+        import { GET_BOOKS, ADD_BOOK } from './queries';
+
+        export default {
+          data() {
+            return {
+              books: query(GET_BOOKS),
+              title: '',
+              author: ''
+            };
+          },
+
+          methods: {
+            create: mutation(ADD_BOOK, addBook => function() {
+              const { title, author } = this.get();
+              if (!title || !author) return;
+
+              addBook({ variables: { title, author } });
+            })
+          },
+
+          onstate: connect
+        }
+      </script>
       ```
   - project: VBA-Web
     github:
@@ -130,32 +183,6 @@ projects:
       '    - GET, POST, PUT, DELETE
       '    - Authentication (Basic, OAuth, etc.)
       '    - and more!
-      ```
-  - project: knockout.collection
-    github:
-      user: timhall
-      repo: knockout.collection
-    blurb: |
-      knockout.collection was designed to make it much simpler and more efficient to work with observable arrays in knockout.js. There are two primary issues with working with arrays in knockout.js: 1) Traditional approaches (e.g map or filter) causes the entire DOM that depends on the array to be re-rendered and 2) wiring up listeners for dependencies requires quite a bit of boilerplate and is error-prone. knockout.collection solved these problems and fixed a major pain point in developing a large knockout.js project.
-    example: |
-      ```js
-      var messages = ko.observableArray([
-        { id: 1, subject: 'Hi there!', from: 'Friend' },
-        { id: 2, subject: 'Something important', from: 'Boss' },
-        { id: 3, subject: 'Lunch?', from: 'Friend' },
-        { id: 4, subject: 'Get back to work', from: 'Boss' }
-      ]);
-      var filterBy = ko.observable('Friend');
-
-      var filteredMessages = ko.collection(messages).filter(function (message) {
-        return message.from == filterBy();
-      });
-      // filteredMessages automatically recalculates whenever messages or filterBy changes
-
-      // Features:
-      // - filter, map, pluck, and uniq functions observe changes of internal observables
-      // - results are patched, making redraws occur only as-needed
-      // - results are cached to avoid unneccesary re-evaluations
       ```
   - project: VBA-TDD
     github:
