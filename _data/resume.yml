@@ -9,7 +9,7 @@ experience:
     details:
     - "Work collaboratively as part of a remote team of developers on large React, d3, and Backbone.js applications, developing advanced systems that condense information and tasks into focused, simple interfaces"
     - "Lead a developer experience initiative that unified and modernized internal build tooling, testing, and development processes to aid sharing across teams, improve code quality, and increase iteration speed"
-    - "Create composable and configurable charting system that dramatically simplifies the process of creating new charts and allows rapid iteration of chart design and layout (See [d3.compose](#/projects/d3.compose) for details)"
+    - "Create composable and configurable charting system that dramatically simplifies the process of creating new visualizations and allows rapid iteration of chart design and layout (See [d3-composer](#/projects/d3-composer) for details)"
     - "Design and build an asynchronous data layer for working with csv data, including querying, caching, and advanced processing"
     - "Create a reusable component library with React, Backbone, and d3 components for bootstrapping new projects and sharing best practices"
   - company: Nexant
@@ -38,18 +38,6 @@ experience:
     - "Developed new mathematical models and software tools that applied machine learning, metamodeling, and image processing for understanding the manufacturability of novel injection-molded fiber-filled polymers that dramatically reduced analysis time and computational resources, are applicable to optimization and design exploration, and maintained minimal error"
     - "Designed experimental analyses that decreased the number of experimental simulations required for design verification, performed injection mold design and machining that balanced design and manufacturing considerations, and standardized microscope imaging and other data collection techniques"
 
-  - company: "Dominion Power, Performance Excellence"
-    location: "Richmond, VA"
-    titles:
-    - title: Engineering Intern
-      start_date: May 2008
-      end_date: August 2009
-    blurb:
-    details:
-    - "Developed software applications using Visual Basic and Excel to analyze historical data, identify performance trends, and automatically offer predictions and recommendations for improving efficiency of primary power plant components, including centrifugal pumps, condensers, and turbines. These tools successfully identified critical problems, often weeks or months before they became apparent to plant personnel, and facilitated preventive and required maintenance in order to ensure peak performance"
-    - "Created a monthly performance reporting tool which programmatically collected data from a multitude of sources and performed analyses to determine itemized, as well as overall, plant performance and efficiency. This tool considerably expanded the amount and quality of performance data available to power plant management and engineers and was particularly useful for prioritizing process improvements and identifying maintenance issues"
-    - "Maintained and updated established analysis tools to utilize modern software, usability, and engineering techniques which significantly improved execution speed, reliability, and ease-of-use"
-
 education:
   - school: University of Maryland
     location: "College Park, MD"
@@ -62,56 +50,70 @@ education:
     degrees:
     - "Bachelor of Science, Mechanical Engineering, Magna Cum Laude"
     - "Minor, Piano Performance"
+
 projects:
-  - project: d3.compose
+  - project: vba-blocks
+    github:
+      user: vba-blocks
+      repo: vba-blocks
+    blurb: |
+      A package manager and build tool for VBA
+  - project: d3-composer
     github:
       user: CSNW
-      repo: d3.compose
+      repo: d3-composer
     blurb: |
-      Compose complex, data-driven visualizations from reusable charts and components with d3. Was able to quickly create dynamic charts from common chart components for transferring scientific papers to the web.
+      Functional chart components and a svg grid system for creating advanced visualizations 
     example: |
       ```js
-      const chart = d3.select('#id').chart('Compose', data => {
-        // Prepare data and scales
-        const { input, output } = data;
-        const xScale = { data: input, key: 'x' };
-        const yScale = { data: input, key: 'y' };
-        const y2Scale = { data: output, key: 'y' };
+      import { select } from 'd3';
+      import { template, layout, series, line, axisLeft, text, size } from 'd3-composer';
 
-        // Set up charts (bars and lines) and components (x, y, and y2 axes)
-        const charts = [
-          d3c.bars('bars', { data: input, xScale, yScale });
-          d3c.lines('lines', { data: output, xScale, yScale: y2Scale });
-        ];
+      function lines(selection, options = {}) {
+        const { data = [], xScale, yScale  } = options;
 
-        const xAxis = d3c.axis('xAxis', { scale: xScale });
-        const xAxisTitle = d3c.axisTitle('Year');
-        const yAxis = d3c.axis('yAxis', { scale: yScale });
-        const yAxisTitle = d3c.axisTitle('Input');
-        const y2Axis = d3c.axis('y2Axis', { scale: y2Scale });
-        const y2AxisTitle = d3c.axisTitle('Output');
-        const title = d3c.title('Input vs. Output by Year');
+        const grid = template(`
+          "title title" 50
+          "y_axis chart" auto
+          / 50 auto
+        `, size(selection));
 
-        // Return layout of charts and components
-        return [
-          title,
-          [yAxisTitle, yAxis, d3c.layered(charts), y2Axis, y2AxisTitle],
-          xAxis,
-          xAxisTitle
-        ];
-      });
+        xScale.range([0, grid.chart.width]);
+        yScale.range([grid.chart.height, 0]);
 
-      chart.draw({input: [/* ... */], output: [/* ... */]});
+        layout(selection, grid, layers => {
+          axisLeft(layers.y_axis(), { scale: yScale });
+          
+          line(
+            series(layers.chart(), { data }),
+            {
+              data: series => series.values,
+              x: d => xScale(d.x),
+              y: d => yScale(d.y)
+            }
+          );
+          
+          text(layers.title(), { text: 'Line Chart' });
+        });
+      }
       ```
   - project: svelte-apollo
     github:
       user: timhall
       repo: svelte-apollo
     blurb: |
-      Connect Svelte components to GraphQL using a simple observable interface and minimal wrapper around Apollo GraphQL.
+      Svelte integration for Apollo GraphQL.
     example: |
       ```html
-      {#await books}
+      <script>
+        import { getClient, query } from 'svelte-apollo'; 
+        import { GET_BOOKS } from './queries';
+
+        const client = getClient();
+        const books = query(client, { query: GET_BOOKS });
+      </script>
+
+      {#await $books}
         Loading...
       {:then result}
         {#each result.data.books as book}
@@ -120,92 +122,16 @@ projects:
       {:catch error}
         Error: {error}
       {/await}
-
-      <form on:submit="create()">
-        <h2>New Book<h2>
-
-        <label for="title">Title</label>
-        <input type="text" id="title" bind:value=title />
-        
-        <label for="author">Author</label> 
-        <input type="text" id="author" bind:value=author />
-
-        <button type="submit">Add Book</button>
-      </form>
-
-      <script>
-        import { query, mutation, connect } from 'svelte-apollo'; 
-        import { GET_BOOKS, ADD_BOOK } from './queries';
-
-        export default {
-          data() {
-            return {
-              books: query(GET_BOOKS),
-              title: '',
-              author: ''
-            };
-          },
-
-          methods: {
-            create: mutation(ADD_BOOK, addBook => function() {
-              const { title, author } = this.get();
-              if (!title || !author) return;
-
-              addBook({ variables: { title, author } });
-            })
-          },
-
-          onstate: connect
-        }
-      </script>
       ```
   - project: VBA-Web
     github:
       user: VBA-tools
       repo: VBA-Web
     blurb: |
-      The most-starred VBA project on GitHub (admittedly a dubious honor) that gives structured web queries to Excel, Access, etc. for Windows and Mac (quite an accomplishment, since there was previously no straighforward way of accessing web services on Mac). Extracted from work coordinating Salesforce, Trello, and Ducksboard from Excel.
-    example: |
-      ```vb
-      Dim Client As New WebClient
-      Client.BaseUrl = "https://api.example.com/"
-
-      Dim Request As New WebRequest
-      Request.Resource = "users/123"
-      Request.Method = WebMethod.HttpPut
-      Request.Format = WebFormat.Json
-      Request.AddBodyParameter "key", "value"
-
-      Dim Response As WebResponse
-      Set Response = Client.Execute(Request)
-      ' -> PUT https://api.example.com/users/123 {"key":"value"}
-      '    - JSON conversion and parsing
-      '    - GET, POST, PUT, DELETE
-      '    - Authentication (Basic, OAuth, etc.)
-      '    - and more!
-      ```
-  - project: VBA-TDD
+      The most-starred VBA project on GitHub (admittedly a dubious honor) that gives structured web queries to Excel, Access, etc. for Windows and Mac (quite an accomplishment, since there was previously no straighforward way of accessing web services on Mac). Extracted from work coordinating Salesforce and Trello from Excel.
+  - project: vba-test
     github:
       user: VBA-tools
-      repo: VBA-TDD
+      repo: vba-test
     blurb: |
-      I liked testing with [Jasmine](http://jasmine.github.io/) so much, I ported it to Excel! Extracted from a system for verifying spreadsheets, VBA-TDD improved confidence in introducing new features and reduced critical errors in spreadsheets that were released across the country.
-    example: |
-      ```vb
-      Dim Specs As New SpecSuite
-      Specs.Description = "Test Workbook"
-
-      ' Cleanup before each spec with "Cleanup" callback
-      Specs.BeforeEach "Cleanup"
-
-      With Specs.It("should add two numbers")
-         .Expect(Add(2, 2)).ToEqual 4
-      End With
-
-      With Specs.It("should test complex things")
-        .Expect(ThisWorkbook.Sheets("Hidden").Visible).ToNotEqual _
-          XlSheetVisibility.xlSheetVisible
-        .Expect(ThisWorkbook.Sheets("Main").Cells(1, 1).Interior.Color).ToEqual _
-          RGB(255, 0, 0)
-      End With
-      ```
+      I liked testing with [Jasmine](http://jasmine.github.io/) so much, I ported it to Excel! Extracted from a system for verifying spreadsheets, vba-test improved confidence in introducing new features and reduced critical errors in spreadsheets that were released across the country.
