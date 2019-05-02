@@ -1,6 +1,9 @@
-# data-manager
+---
+title: data-manager
+meta: May. 2, 2019
+---
 
-Advanced querying and processing for csv data.
+The following is the README from data-manager, an advanced querying and processing for csv data.
 
 Example:
 
