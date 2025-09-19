@@ -1,0 +1,14 @@
+---
+import Page from "./page.astro";
+
+type Props = { title: string };
+
+const { title } = Astro.props;
+---
+
+<Page>
+	<article>
+		<h1>{title}</h1>
+		<slot />
+	</article>
+</Page>
