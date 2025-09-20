@@ -1,5 +1,9 @@
 {
-	"plugins": ["prettier-plugin-organize-imports", "prettier-plugin-astro"],
+	"plugins": [
+		"prettier-plugin-organize-imports",
+		"prettier-plugin-astro",
+		"prettier-plugin-svelte"
+	],
 	"useTabs": true,
 	"overrides": [
 		{
