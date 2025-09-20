@@ -1,0 +1,18 @@
+---
+import Page from "../../layouts/page.astro";
+import { getCollection } from "astro:content";
+
+const articles = await getCollection("articles");
+---
+
+<Page title="Articles">
+	<ul>
+		{
+			articles.map((article) => (
+				<li>
+					<a href={`/articles/${article.data.slug}`}>{article.data.title}</a>
+				</li>
+			))
+		}
+	</ul>
+</Page>

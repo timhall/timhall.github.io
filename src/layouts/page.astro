@@ -1,0 +1,24 @@
+---
+import Base from "./base.astro";
+import Main from "../components/main.astro";
+import Header from "../components/header.astro";
+import Footer from "../components/footer.astro";
+
+type Props = {
+	title: string;
+	publishedAt?: Date | null;
+	updatedAt?: Date | null;
+};
+
+const { title, publishedAt, updatedAt } = Astro.props;
+---
+
+<Base title={title}>
+	<Main>
+		<Header title={title} publishedAt={publishedAt} updatedAt={updatedAt} />
+		<article>
+			<slot />
+		</article>
+		<Footer />
+	</Main>
+</Base>

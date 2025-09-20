@@ -1,0 +1,23 @@
+---
+
+---
+
+<style>
+	main {
+		width: 100%;
+		margin-top: 4px;
+		padding-inline: 10px;
+		background-color: var(--pico-background-color);
+	}
+
+	@media (min-width: 768px) {
+		main {
+			max-width: 77ch;
+			padding-inline: 30px;
+		}
+	}
+</style>
+
+<main>
+	<slot />
+</main>

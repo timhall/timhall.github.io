@@ -1,0 +1,121 @@
+---
+type Props = { title?: string };
+
+const { title } = Astro.props;
+---
+
+<style is:global lang="scss">
+	@use "sass:color";
+	@use "@picocss/pico/scss/pico" with (
+		$theme-color: "azure",
+		$enable-semantic-container: false,
+		$enable-classes: false,
+		$modules: (
+			"themes/default": true,
+
+			"layout/document": true,
+			"layout/landmarks": true,
+			"layout/container": true,
+			"layout/section": true,
+			"layout/grid": true,
+			"layout/overflow-auto": true,
+
+			"content/link": true,
+			"content/typography": true,
+			"content/embedded": true,
+			"content/button": true,
+			"content/table": true,
+			"content/code": true,
+			"content/figure": true,
+			"content/misc": true,
+
+			"forms/basics": false,
+			"forms/checkbox-radio-switch": false,
+			"forms/input-color": false,
+			"forms/input-date": false,
+			"forms/input-file": false,
+			"forms/input-range": false,
+			"forms/input-search": false,
+
+			"components/accordion": false,
+			"components/card": false,
+			"components/dropdown": false,
+			"components/group": false,
+			"components/loading": false,
+			"components/modal": false,
+			"components/nav": false,
+			"components/progress": false,
+			"components/tooltip": false,
+
+			"utilities/accessibility": false,
+			"utilities/reduce-motion": false,
+		)
+	);
+	@use "@picocss/pico/scss/colors" as *;
+	@use "@picocss/pico/scss/colors/utilities" with (
+		$palette: (
+			"color-families": (
+				slate,
+				azure,
+			),
+		),
+		$utilities: (
+			"background-colors": false,
+		)
+	);
+
+	:root {
+		--pico-color-slate-25: #{color.mix(#fff, $slate-50)};
+
+		--pico-font-size: 100%;
+		--pico-font-weight: 400;
+		--pico-code-background-color: var(--pico-color-slate-25);
+	}
+
+	html {
+		background-color: var(--pico-primary-background);
+	}
+	body {
+		display: flex;
+		justify-content: center;
+		min-height: 100vh;
+	}
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		--pico-font-weight: 600;
+	}
+	a {
+		text-decoration: none;
+		border-bottom: dotted 1px;
+	}
+	a:hover {
+		border-bottom-style: solid;
+	}
+	a:focus {
+		border-bottom-color: transparent;
+	}
+
+	@media only screen and (prefers-color-scheme: dark) {
+		:root:not([data-theme]),
+		:host(:not([data-theme])) {
+			--pico-primary-background: var(--pico-color-azure-700);
+			--pico-code-background-color: var(--pico-color-slate-850);
+		}
+	}
+</style>
+
+<html lang="en">
+	<meta charset="utf-8" />
+	<link rel="icon" type="image/svg+xml" href="/favicon.ico" />
+	<meta name="viewport" content="width=device-width" />
+	<meta name="generator" content={Astro.generator} />
+	<title>{title ?? "Tim Hall"}</title>
+
+	<body>
+		<slot />
+	</body>
+</html>
