@@ -1,7 +1,6 @@
 ---
-title: "Primitives: Streams"
-slug: primitives-streams
-draft: true
+title: "Streams - Web Primitives"
+slug: streams
 ---
 
 Streams have been a fundamental part of JS, especially Node.js, fo a long time.

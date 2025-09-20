@@ -8,11 +8,32 @@ const articles = await getCollection("articles");
 <Page title="Articles">
 	<ul>
 		{
-			articles.map((article) => (
-				<li>
-					<a href={`/articles/${article.data.slug}`}>{article.data.title}</a>
-				</li>
-			))
+			articles.map(
+				(article) =>
+					!!article.data.publishedAt && (
+						<li>
+							<a href={`/articles/${article.data.slug}`}>
+								{article.data.title}
+							</a>
+						</li>
+					),
+			)
+		}
+	</ul>
+
+	<h2>Drafts</h2>
+	<ul>
+		{
+			articles.map(
+				(article) =>
+					!article.data.publishedAt && (
+						<li>
+							<a href={`/articles/${article.data.slug}`}>
+								{article.data.title}
+							</a>
+						</li>
+					),
+			)
 		}
 	</ul>
 </Page>

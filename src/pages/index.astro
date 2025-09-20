@@ -129,7 +129,7 @@ const publications = [
 		{
 			articles.map(
 				(article) =>
-					!article.data.draft && (
+					!!article.data.publishedAt && (
 						<li>
 							<a href={`/articles/${article.data.slug}`}>
 								{article.data.title}

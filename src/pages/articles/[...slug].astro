@@ -17,10 +17,20 @@ const article = Astro.props;
 const { Content } = await render(article);
 ---
 
+<style>
+	.draft {
+		display: inline-block;
+		margin-bottom: 0.5rem;
+		text-transform: uppercase;
+		color: var(--pico-muted-color);
+	}
+</style>
+
 <Article
 	title={article.data.title}
 	publishedAt={article.data.publishedAt}
 	updatedAt={article.data.updatedAt}
 >
+	{!article.data.publishedAt && <small class="draft">Draft</small>}
 	<Content />
 </Article>
