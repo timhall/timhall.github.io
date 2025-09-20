@@ -3,15 +3,120 @@ import { getCollection } from "astro:content";
 import Page from "../layouts/page.astro";
 
 const articles = await getCollection("articles");
+const externalArticles = [
+	{
+		title: "Module Resolution",
+		url: "https://www.vba-blocks.com/blog/2017/module-resolution/",
+		site: "vba-blocks",
+	},
+];
+
+const projects = [
+	{
+		name: "vba-blocks",
+		link: "https://github.com/vba-blocks/vba-blocks",
+		description: "A package manager and build tool for VBA",
+	},
+	{
+		name: "d3-composer",
+		link: "https://github.com/CSNW/d3-composer",
+		description:
+			"Functional chart components and a svg grid system for creating advanced visualizations",
+	},
+	{
+		name: "svelte-apollo",
+		link: "https://github.com/timhall/svelte-apollo",
+		description: "Svelte integration for Apollo GraphQL",
+	},
+	{
+		name: "VBA-Web",
+		link: "https://github.com/VBA-tools/VBA-Web",
+		description:
+			"The most-starred VBA project on GitHub, gives structured web queries to Office.",
+	},
+	{
+		name: "vba-test",
+		link: "https://github.com/VBA-tools/vba-test",
+		description: "Liked TDD so much, I ported Jasmine to Excel",
+	},
+];
 ---
 
+<style>
+	.blurb {
+		color: var(--pico-primary);
+		text-align: center;
+		font-size: 1.4rem;
+		margin-bottom: 1.5rem;
+	}
+
+	h2 {
+		--pico-font-size: 1.5rem !important;
+		--pico-line-height: 1.175 !important;
+		--pico-typography-spacing-top: 1.5rem !important;
+	}
+	.indented {
+		margin-inline-start: 1rem;
+		padding-inline-start: 0;
+	}
+	ul li {
+		list-style: none;
+		margin-bottom: 1rem;
+	}
+	.project-description {
+		margin-block-end: 0;
+	}
+	.article-site {
+		margin-inline-start: 0.5ch;
+		color: var(--pico-muted-color);
+	}
+</style>
 <Page title="Tim Hall">
+	<p class="blurb">I'm Tim Hall and I LOVE creating things.</p>
+	<p>
+		From LEGO as a little kid (and a big kid too), to a MS in Mechanical
+		Engineering, to my recent journeys in programming, I'm obsessed with
+		creation and the opportunity to shape this world.
+	</p>
+
+	<h2>Contact</h2>
+	<p>
+		<a class="indented" href="mailto:tim.hall.engr@gmail.com"
+			>tim.hall.engr@gmail.com</a
+		>
+	</p>
+
+	<h2>Projects</h2>
+	<ul class="indented">
+		{
+			projects.map((project) => (
+				<li>
+					<a href={project.link}>{project.name}</a>
+					{!!project.description && (
+						<p class="project-description">{project.description}</p>
+					)}
+				</li>
+			))
+		}
+		<li>
+			<a href="https://github.com/timhall">and more!</a>
+		</li>
+	</ul>
+
 	<h2>Articles</h2>
-	<ul>
+	<ul class="indented">
 		{
 			articles.map((article) => (
 				<li>
 					<a href={`/articles/${article.data.slug}`}>{article.data.title}</a>
+				</li>
+			))
+		}
+		{
+			externalArticles.map((article) => (
+				<li>
+					<a href={article.url}>{article.title}</a>
+					{!!article.site && <span class="article-site">[{article.site}]</span>}
 				</li>
 			))
 		}

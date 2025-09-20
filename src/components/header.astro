@@ -29,12 +29,11 @@ const updatedAt = Astro.props.updatedAt?.toLocaleDateString("en-US", {
 		padding-top: 0.6rem;
 	}
 	.logo {
+		border: none;
 		text-decoration: none;
 		font-size: 2.8rem;
 		line-height: 1;
 		font-weight: 700;
-		position: relative;
-		top: -0.3rem;
 	}
 	h1 {
 		font-weight: 600;
@@ -51,8 +50,9 @@ const updatedAt = Astro.props.updatedAt?.toLocaleDateString("en-US", {
 			{
 				!!publishedAt ? (
 					<>
-						Tim Hall - <span>{publishedAt}</span>
-						{updatedAt && <span>(Updated {updatedAt})</span>}
+						<span>Tim Hall</span>
+						<span>- {publishedAt}</span>
+						{updatedAt && <span>(Last updated {updatedAt})</span>}
 					</>
 				) : (
 					tagline

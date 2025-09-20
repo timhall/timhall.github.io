@@ -128,12 +128,12 @@ Now to get a little into the nitty gritty of vector math. One of the things that
 2. In order to determine the x- and y-components, we treat the magnitude as the hypotenuse of the triangle
 3. With the triangle drawn, we can simply use sin and cos to find the x- and y-components:
 
-   $$
-   \begin{aligned}
-   x & = magnitude \times\cos(angle) \\
-   y & = magnitude \times\sin(angle)
-   \end{aligned}
-   $$
+$$
+\begin{aligned}
+x & = magnitude \times\cos(angle) \\
+y & = magnitude \times\sin(angle)
+\end{aligned}
+$$
 
 Let's plug this in:
 
