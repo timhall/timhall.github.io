@@ -40,6 +40,27 @@ const projects = [
 		description: "Liked TDD so much, I ported Jasmine to Excel",
 	},
 ];
+
+const publications = [
+	{
+		name: "Master's Thesis",
+		link: "//drum.lib.umd.edu/handle/1903/12027",
+		description:
+			"Manufacturability Analysis of Thermally-Enhanced Polymer Composite Heat Exchangers",
+	},
+	{
+		name: "DETC 2011 Conference Paper",
+		link: "/publications/A_New_Approach_for_Explicit_Construction_of_Moldability_-_Tim_Hall.pdf",
+		description:
+			"A New Approach for Explicit Construction of Moldability Based Feasibility Boundary for Polymer Heat Exchangers",
+	},
+	{
+		name: "MSEC 2012 Conference Paper",
+		link: "/publications/Development_of_a_Fiber_Orientation_Measurement_Methodology_-_Tim_Hall.pdf",
+		description:
+			"Development of a Fiber Orientation Measurement Methodology for Injection Molded Thermally-Enhanced Polymers",
+	},
+];
 ---
 
 <style>
@@ -63,7 +84,7 @@ const projects = [
 		list-style: none;
 		margin-bottom: 1rem;
 	}
-	.project-description {
+	.description {
 		margin-block-end: 0;
 	}
 	.article-site {
@@ -93,7 +114,7 @@ const projects = [
 				<li>
 					<a href={project.link}>{project.name}</a>
 					{!!project.description && (
-						<p class="project-description">{project.description}</p>
+						<p class="description">{project.description}</p>
 					)}
 				</li>
 			))
@@ -117,6 +138,18 @@ const projects = [
 				<li>
 					<a href={article.url}>{article.title}</a>
 					{!!article.site && <span class="article-site">[{article.site}]</span>}
+				</li>
+			))
+		}
+	</ul>
+
+	<h2>Publications</h2>
+	<ul class="indented">
+		{
+			publications.map((publication) => (
+				<li>
+					<a href={publication.link}>{publication.name}</a>
+					<p class="description">{publication.description}</p>
 				</li>
 			))
 		}
