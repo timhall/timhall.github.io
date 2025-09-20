@@ -19,4 +19,5 @@ export default defineConfig({
 		"/articles/freebody/vectors": "/articles/vectors",
 	},
 	integrations: [],
+	site: "https://timhall.github.io",
 });
