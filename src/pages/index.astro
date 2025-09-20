@@ -127,11 +127,16 @@ const publications = [
 	<h2>Articles</h2>
 	<ul class="indented">
 		{
-			articles.map((article) => (
-				<li>
-					<a href={`/articles/${article.data.slug}`}>{article.data.title}</a>
-				</li>
-			))
+			articles.map(
+				(article) =>
+					!article.data.draft && (
+						<li>
+							<a href={`/articles/${article.data.slug}`}>
+								{article.data.title}
+							</a>
+						</li>
+					),
+			)
 		}
 		{
 			externalArticles.map((article) => (
