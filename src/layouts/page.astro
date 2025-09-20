@@ -1,18 +1,24 @@
 ---
-type Props = { title?: string };
+import Base from "./base.astro";
+import Main from "../components/main.astro";
+import Header from "../components/header.astro";
+import Footer from "../components/footer.astro";
 
-const { title } = Astro.props;
+type Props = {
+	title: string;
+	publishedAt?: Date | null;
+	updatedAt?: Date | null;
+};
+
+const { title, publishedAt, updatedAt } = Astro.props;
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>{title ?? "Tim Hall"}</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+<Base title={title}>
+	<Main>
+		<Header title={title} publishedAt={publishedAt} updatedAt={updatedAt} />
+		<article>
+			<slot />
+		</article>
+		<Footer />
+	</Main>
+</Base>

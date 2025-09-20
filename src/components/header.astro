@@ -1,0 +1,63 @@
+---
+type Props = {
+	title?: string;
+	publishedAt?: Date | null;
+	updatedAt?: Date | null;
+};
+
+const tagline = "Creative code and engineering";
+const { title } = Astro.props;
+
+const publishedAt = Astro.props.publishedAt?.toLocaleDateString("en-US", {
+	year: "numeric",
+	month: "short",
+	day: "numeric",
+});
+const updatedAt = Astro.props.updatedAt?.toLocaleDateString("en-US", {
+	year: "numeric",
+	month: "short",
+	day: "numeric",
+});
+---
+
+<style>
+	header {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+		gap: 0.6rem;
+		padding-top: 0.6rem;
+	}
+	.logo {
+		text-decoration: none;
+		font-size: 2.8rem;
+		line-height: 1;
+		font-weight: 700;
+		position: relative;
+		top: -0.3rem;
+	}
+	h1 {
+		font-weight: 600;
+	}
+	.metadata {
+		color: var(--pico-muted-color);
+	}
+</style>
+<header>
+	<a class="logo" href="/">TH</a>
+	<hgroup>
+		<h1>{title}</h1>
+		<div class="metadata">
+			{
+				!!publishedAt ? (
+					<>
+						Tim Hall - <span>{publishedAt}</span>
+						{updatedAt && <span>(Updated {updatedAt})</span>}
+					</>
+				) : (
+					tagline
+				)
+			}
+		</div>
+	</hgroup>
+</header>

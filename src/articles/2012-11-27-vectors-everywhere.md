@@ -5,7 +5,7 @@ publishedAt: 2012-11-27T00:00:00Z
 updatedAt: 2018-06-01T00:00:00Z
 ---
 
-Vectors are one of the most fundamental parts of physics and are a compact way to say quite a bit.Forces, velocity, acceleration; they can all be represented by vectors. We'll get into the math of vectors below, but first a little overview. Fundamentally, vectors are used to represent things (forces, velocity, etc.) as having a magnitude and direction and from this we can figure out all sorts of things. Rather than adjusting x- and y-components with a change in direction, only the direction needs to be changed and similarly for magnitude. Two things can say quite a bit, it's kinda nifty.
+Vectors are one of the most fundamental parts of physics and are a compact way to say quite a bit. Forces, velocity, acceleration; they can all be represented by vectors. We'll get into the math of vectors below, but first a little overview. Fundamentally, vectors are used to represent things (forces, velocity, etc.) as having a magnitude and direction and from this we can figure out all sorts of things. Rather than adjusting x- and y-components with a change in direction, only the direction needs to be changed and similarly for magnitude. Two things can say quite a bit, it's kinda nifty.
 
 Note, June 2018: Updated code samples to modern standards
 
@@ -29,7 +29,7 @@ force.x; // = sqrt(2)
 force.y; // = sqrt(2)
 ```
 
-Nice and simple. There are only four properties for the Vector class and of these only two are instance properties, magnitude and angle, as x and y can be calculated from magnitude and angle. With Vectors strewn throughout Freebody, it was essential to keep the Vector class as focused and efficient as possible. Here's a stubbed out version of the Vector class (you can find the full class in the [timhall/freebody.js source>(https://github.com/timhall/freebody.js)):
+Nice and simple. There are only four properties for the Vector class and of these only two are instance properties, magnitude and angle, as x and y can be calculated from magnitude and angle. With Vectors strewn throughout Freebody, it was essential to keep the Vector class as focused and efficient as possible. Here's a stubbed out version of the Vector class (you can find the full class in the [freebody.js source](https://github.com/timhall/freebody.js)):
 
 ```js
 var Vector = function (magnitude, angle) {
@@ -74,7 +74,7 @@ class Vector {
 
 Some things to note:
 
-1\. Why not pass the traditional `options` argument into the class?
+**1\. Why not pass the traditional `options` argument into the class?**
 
 Something to keep in mind during javascript game development is that while js engines have gotten much faster, garbage collection can rear its ugly head and be a real frame-rate killer. One of the best ways to limit the aggressiveness of garbage collection is avoiding creating new objects in the event loop (which includes anything created with `new`, `{}`, and `[]`). Say you've determined that you have to create a new Vector during the event loop and chose the `options` style.
 
@@ -82,15 +82,11 @@ Something to keep in mind during javascript game development is that while js en
 new Vector({ angle: 45 });
 ```
 
-```
 What is not immediately obvious is that this line actually creates two objects, one from the `new` and one from the `{}`. These throwaway objects, especially those created with `{}`, can start to add up and are ripe for garbage collection. Switching to named arguments is a quick way to cut object creation in half for the Vector class.
-```
 
-2\. Why have getters/setters for magnitude and angle if they are simple properties?
+**2\. Why have getters/setters for magnitude and angle if they are simple properties?**
 
-```
 This was mainly to cut down on confusion from having some properties requiring the `()` and others not. Since the getter/setter is defined in the function prototype and is therefore shared with all Vectors, there should be minimal increased overhead from adding them.
-```
 
 ### Getters and Setters
 

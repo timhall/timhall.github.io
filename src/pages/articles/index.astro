@@ -1,12 +1,11 @@
 ---
+import Page from "../../layouts/page.astro";
 import { getCollection } from "astro:content";
-import Page from "../layouts/page.astro";
 
 const articles = await getCollection("articles");
 ---
 
-<Page title="Tim Hall">
-	<h2>Articles</h2>
+<Page title="Articles">
 	<ul>
 		{
 			articles.map((article) => (

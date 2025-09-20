@@ -17,6 +17,10 @@ const article = Astro.props;
 const { Content } = await render(article);
 ---
 
-<Article title={article.data.title}>
+<Article
+	title={article.data.title}
+	publishedAt={article.data.publishedAt}
+	updatedAt={article.data.updatedAt}
+>
 	<Content />
 </Article>
