@@ -238,5 +238,5 @@ And with that, our vector class is complete (with only a few things, such as kee
 
 ## Tips
 
-- [How to write low garbage real-time JavaScript](https://www.scirra.com/blog/76/how-to-write-low-garbage-real-time-javascript)
+- How to write low garbage real-time JavaScript: (dead link) `https://www.scirra.com/blog/76/how-to-write-low-garbage-real-time-javascript`
 - [Trig Refresher](http://www.khanacademy.org/math/trigonometry)
