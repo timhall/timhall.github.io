@@ -7,6 +7,7 @@ const { title } = Astro.props;
 <style is:global lang="scss">
 	@use "sass:color";
 	@use "@picocss/pico/scss/pico" with (
+		$css-var-prefix: "--",
 		$theme-color: "azure",
 		$enable-semantic-container: false,
 		$enable-classes: false,
@@ -53,10 +54,13 @@ const { title } = Astro.props;
 	);
 	@use "@picocss/pico/scss/colors" as *;
 	@use "@picocss/pico/scss/colors/utilities" with (
+		$css-var-prefix: "--",
 		$palette: (
 			"color-families": (
 				slate,
 				azure,
+				red,
+				jade,
 			),
 		),
 		$utilities: (
@@ -65,15 +69,15 @@ const { title } = Astro.props;
 	);
 
 	:root {
-		--pico-color-slate-25: #{color.mix(#fff, $slate-50)};
+		--color-slate-25: #{color.mix(#fff, $slate-50)};
 
-		--pico-font-size: 100%;
-		--pico-font-weight: 400;
-		--pico-code-background-color: var(--pico-color-slate-25);
+		--font-size: 100%;
+		--font-weight: 400;
+		--code-background-color: var(--color-slate-25);
 	}
 
 	html {
-		background-color: var(--pico-primary-background);
+		background-color: var(--primary-background);
 	}
 	body {
 		display: flex;
@@ -86,7 +90,7 @@ const { title } = Astro.props;
 	h4,
 	h5,
 	h6 {
-		--pico-font-weight: 600;
+		--font-weight: 600;
 	}
 	a {
 		text-decoration: none;
@@ -98,12 +102,18 @@ const { title } = Astro.props;
 	a:focus {
 		border-bottom-color: transparent;
 	}
+	button {
+		touch-action: manipulation;
+	}
+	button:focus {
+		outline: none;
+	}
 
 	@media only screen and (prefers-color-scheme: dark) {
 		:root:not([data-theme]),
 		:host(:not([data-theme])) {
-			--pico-primary-background: var(--pico-color-azure-700);
-			--pico-code-background-color: var(--pico-color-slate-850);
+			--primary-background: var(--color-azure-700);
+			--code-background-color: var(--color-slate-850);
 		}
 	}
 </style>
