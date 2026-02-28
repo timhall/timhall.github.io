@@ -28,6 +28,6 @@
 		"@astrojs/mdx": "^4.3.5",
 		"@astrojs/svelte": "^7.1.1",
 		"@picocss/pico": "^2.1.1",
-		"svelte": "^5.39.3"
+		"svelte": "^5.53.5"
 	}
 }
