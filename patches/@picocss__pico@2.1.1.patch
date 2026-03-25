@@ -1,0 +1,16 @@
+diff --git a/scss/components/_modal.scss b/scss/components/_modal.scss
+index d17943b2ad838351cfefb699fe2f36c8f6d2c548..ad3d328a981e9ffc7c6db5cf5e8785a2a8ef36ab 100644
+--- a/scss/components/_modal.scss
++++ b/scss/components/_modal.scss
+@@ -34,9 +34,8 @@
+     // Content
+     > article {
+       $close-selector: if(
+-        $enable-classes,
+-        ".close, :is(a, button)[rel=prev]",
+-        ":is(a, button)[rel=prev]"
++        sass($enable-classes): ".close, :is(a, button)[rel=prev]";
++        else: ":is(a, button)[rel=prev]"
+       );
+       width: 100%;
+       max-height: calc(100vh - var(#{$css-var-prefix}spacing) * 2);
