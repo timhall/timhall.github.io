@@ -1,12 +1,17 @@
 <script lang="ts">
+	import ASCIIForm from "../../ui/ASCIIForm.svelte";
+	import ASCIIConnector from "../../ui/ASCIIConnector.svelte";
+
 	class ControlledReadableStream<TValue> extends ReadableStream<TValue> {
 		controller: ReadableStreamDefaultController<TValue>;
 		state: {
+			locked: boolean;
 			closed: boolean;
 			errored: boolean;
 			queue: TValue[];
 			error: unknown | null;
 		} = $state({
+			locked: true,
 			closed: false,
 			errored: false,
 			queue: [],
@@ -21,6 +26,7 @@
 					readableController = controller;
 				},
 				cancel: () => {
+					this.state.locked = this.locked;
 					this.state.closed = true;
 					this.state.queue = [];
 				},
@@ -31,6 +37,7 @@
 		enqueue(value: TValue) {
 			try {
 				this.controller.enqueue(value);
+
 				this.state.queue.push(value);
 			} catch (error) {
 				this.failures.push(error as Error);
@@ -40,6 +47,8 @@
 		close() {
 			try {
 				this.controller.close();
+
+				this.state.locked = this.locked;
 				this.state.closed = true;
 			} catch (error) {
 				this.failures.push(error as Error);
@@ -49,6 +58,8 @@
 		error(error: unknown) {
 			try {
 				this.controller.error(error);
+
+				this.state.locked = this.locked;
 				this.state.closed = true;
 				this.state.errored = true;
 				this.state.queue = [];
@@ -64,11 +75,31 @@
 		| { status: "resolved"; value: TValue }
 		| { status: "rejected"; error: unknown };
 
-	let index = 0;
+	let index = $state(0);
 	let latest: PromiseState<
 		{ done: false; value: number } | { done: true }
 	> | null = $state(null);
 	let failures: Error[] = $state([]);
+
+	function wrapText(text: string, maxLength: number = 80): string {
+		if (text.length <= maxLength) return text;
+
+		const words = text.split(" ");
+		const lines: string[] = [];
+		let currentLine = "";
+
+		for (const word of words) {
+			if (currentLine.length + word.length + 1 <= maxLength) {
+				currentLine = currentLine ? `${currentLine} ${word}` : word;
+			} else {
+				if (currentLine) lines.push(currentLine);
+				currentLine = word;
+			}
+		}
+		if (currentLine) lines.push(currentLine);
+
+		return lines.join("\n");
+	}
 
 	let readable: ControlledReadableStream<number> = $state(
 		new ControlledReadableStream<number>(),
@@ -102,175 +133,141 @@
 		try {
 			latest = { status: "pending" };
 			const value = await reading;
+
 			readable.state.queue.shift();
 			latest = { status: "resolved", value };
 		} catch (error) {
 			latest = { status: "rejected", error };
 		}
 	}
-	function cancel() {
+
+	async function cancel() {
 		if (!reader) return;
 
 		try {
-			reader.cancel();
+			await reader.cancel();
+			readable.state.locked = readable.locked;
 		} catch (error) {
-			console.log("FAILURE", error);
 			failures.push(error as Error);
 		}
 	}
+
+	const latestValue = $derived(
+		latest?.status === "resolved"
+			? `{\n  value: ${latest.value.value},\n  done: ${latest.value.done}\n}`
+			: latest?.status === "rejected"
+				? latest.error
+				: null,
+	);
+	const latestRead = $derived(
+		wrapText(
+			`value = ${
+				!latest
+					? "null"
+					: `Promise {<${latest.status}>${latestValue ? `: ${latestValue}` : ""}}`
+			}`,
+			80,
+		),
+	);
 </script>
 
 <div class="readable-stream-example">
-	<button onclick={reset}>Reset</button>
-	<div class="sections">
-		<section>
-			<h3>
-				ReadableStream <span
-					class="state"
-					data-closed={readable.state.closed ? "closed" : undefined}
-					>{readable.state.closed ? "Closed" : "Started"}</span
-				>
-			</h3>
-			<div class="actions">
-				<button onclick={() => readable.enqueue((index += 1))}>Enqueue</button>
-				<button onclick={() => readable.close()}>Close</button>
-				<button onclick={() => readable.error(new Error("Uh oh."))}
-					>Error</button
-				>
-			</div>
-			<div class="details">
-				<ul class="queue">
-					{#each readable.state.queue as item}
-						<li>{item}</li>
-					{/each}
-				</ul>
-			</div>
-			{#if readable.failures.length}
-				<ul class="failures">
-					{#each readable.failures as failure}
-						<li>{failure.message}</li>
-					{/each}
-				</ul>
-			{/if}
-		</section>
+	<ASCIIForm direction="vertical">
+		<fieldset>
+			<legend>ReadableStream</legend>
 
-		<section>
-			<h3>Reader</h3>
-			<div class="actions">
-				<button onclick={cancel}>Cancel</button>
-				<button onclick={read}>Read</button>
-			</div>
-			<div class="details">
-				<pre>{JSON.stringify(
-						$state.snapshot({
-							latest,
-						}),
-						(key, value) =>
-							value instanceof Error ? { message: value.message } : value,
-						2,
-					)}</pre>
-			</div>
-			{#if failures.length}
-				<ul class="failures">
-					{#each failures as failure}
-						<li>{failure.message}</li>
+			<section>
+				<div class="values">
+					.locked = {readable.state.locked}
+				</div>
+				<div class="actions">
+					<button onclick={() => readable.enqueue((index += 1))}>
+						.enqueue(#)
+					</button>
+					<button onclick={() => readable.close()}>.close()</button>
+					<button onclick={() => readable.error(new Error("Uh oh"))}
+						>.error()</button
+					>
+				</div>
+			</section>
+
+			<hr />
+			<section>
+				<div>queue = [{readable.state.queue.join(", ")}]</div>
+			</section>
+
+			{#if readable.failures.length}
+				<hr />
+				<section>
+					{#each readable.failures as failure}
+						<div>- {failure.message}</div>
 					{/each}
-				</ul>
+				</section>
 			{/if}
-		</section>
-	</div>
+		</fieldset>
+
+		<div class="connector">
+			<ASCIIConnector text=".getReader()" />
+		</div>
+
+		<fieldset>
+			<legend>Reader</legend>
+
+			<section>
+				<div class="actions">
+					<button onclick={cancel}>.cancel()</button>
+					<button onclick={read}>.read()</button>
+					<button
+						onclick={() => {
+							reader?.releaseLock();
+							readable.state.locked = readable.locked;
+						}}>.releaseLock()</button
+					>
+				</div>
+			</section>
+
+			<hr />
+			<section>
+				<pre>{latestRead}</pre>
+			</section>
+
+			{#if failures.length}
+				<section>
+					{#each failures as failure}
+						<div>- {failure.message}</div>
+					{/each}
+				</section>
+			{/if}
+		</fieldset>
+
+		<button class="reset" onclick={reset}>Reset</button>
+	</ASCIIForm>
 </div>
 
 <style>
-	.readable-stream-example {
-		font-family: var(--font-family-monospace);
-		font-size: 90%;
-	}
-	button {
-		font-size: 90%;
-		padding: 0.25rem 0.5rem;
-	}
-
-	.sections {
-		display: flex;
-		flex-direction: row;
-		gap: 1.5rem;
-		margin-top: 0.25rem;
-	}
 	section {
-		flex: 1;
 		display: flex;
 		flex-direction: column;
-		border: solid 1px var(--color-azure-700);
-	}
-	h3 {
-		margin: 0;
-		padding: 0.5rem;
-		font-family: var(--font-family-monospace);
-		font-size: 0.9rem;
-		font-weight: 400;
-		background-color: var(--color-azure-700);
-		color: var(--primary-inverse);
-	}
-	.state {
-		margin-left: 1rem;
-		font-size: 80%;
-	}
-	.state::before {
-		content: "";
-		display: inline-block;
-		width: 0.6rem;
-		height: 0.6rem;
-		margin-right: 0.3rem;
-		border-radius: calc(0.6rem / 2);
-		background-color: var(--color-jade-500);
-		border: solid 1px var(--color-slate-700);
-	}
-	.state[data-closed]::before {
-		background-color: var(--color-red-500);
-	}
-	.details {
-		flex: 1;
-	}
-	.actions {
-		display: flex;
-		flex-direction: row;
-		padding: 0.5rem;
-		gap: 0.5rem;
+		gap: var(--spacing-m);
 	}
 
-	.queue {
-		display: flex;
-		flex-direction: row;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		min-height: 3.5rem;
-		margin: 0;
-		padding: 0.5rem;
-	}
-	.queue li {
-		width: 2rem;
-		height: 2rem;
-		list-style: none;
-		margin-bottom: 0;
-		line-height: 2rem;
-		text-align: center;
-		background-color: var(--color-slate-100);
+	hr {
+		border: solid 1px var(--color-slate-400);
 	}
 
-	.failures {
-		margin: 0;
-		padding: 0;
+	pre {
+		background: none;
+		border: none;
+		color: inherit;
+		font: inherit;
 	}
-	.failures li {
-		list-style: none;
-		margin-bottom: 0;
-		padding: 0.5rem;
-		font-size: 80%;
-		color: var(--color-red-500);
-		background-color: var(--color-red-100);
+
+	.connector {
+		margin-top: var(--spacing-m);
 	}
-	.failures li + li {
-		border-top: solid 1px var(--color-red-500);
+
+	.reset {
+		margin-top: var(--spacing-m);
+		align-self: center;
 	}
 </style>

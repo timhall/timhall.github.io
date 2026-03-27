@@ -24,7 +24,7 @@ const { title } = Astro.props;
 			"content/link": true,
 			"content/typography": true,
 			"content/embedded": true,
-			"content/button": true,
+			"content/button": false,
 			"content/table": true,
 			"content/code": true,
 			"content/figure": true,
@@ -74,6 +74,10 @@ const { title } = Astro.props;
 		--font-size: 100%;
 		--font-weight: 400;
 		--code-background-color: var(--color-slate-25);
+
+		--spacing-s: 0.25rem;
+		--spacing-m: 0.5rem;
+		--spacing-l: 1rem;
 	}
 
 	html {
