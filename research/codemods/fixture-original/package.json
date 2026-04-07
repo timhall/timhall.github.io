@@ -1,0 +1,11 @@
+{
+  "name": "codemod-fixture",
+  "type": "module",
+  "scripts": {
+    "test": "mocha test/**/*.test.js"
+  },
+  "devDependencies": {
+    "chai": "^4.3.10",
+    "mocha": "^10.2.0"
+  }
+}

@@ -4,105 +4,222 @@ slug: codemods-ai-era
 publishedAt: null
 ---
 
-# Codemods in the AI Era
+Codemods — programmatic transformations of source code — have long been the tool of choice for large-scale migrations: renaming APIs, upgrading frameworks, enforcing new patterns across thousands of files. Now that LLMs can write code fluently, the question is: can AI write codemods for us, or even *be* the codemod?
 
-Codemods — programmatic transformations of source code — have long been the tool of choice for large-scale migrations: renaming APIs, upgrading framework versions, enforcing new patterns across thousands of files. Tools like [jscodeshift](https://github.com/facebook/jscodeshift) made this tractable, but writing them has always required deep knowledge of AST manipulation APIs. Now that LLMs can write code fluently, the natural question is: can AI write codemods for us?
-
-The short answer is: sort of — but the friction reveals something deeper about how LLMs understand code.
+The answer is nuanced, and the friction you hit quickly reveals something deeper about how LLMs understand code.
 
 ---
 
-## The Promise: Natural Language → Codemod
+## The scenario
 
-Tools like [Codemod Studio](https://codemod.com/) let you describe a transformation in plain English and have an LLM generate a working jscodeshift or ast-grep codemod. This is genuinely useful — if you know what you want but don't know the jscodeshift API well, the LLM can save you a lot of time.
+One-off codemods on large codebases. You want to migrate from mocha to vitest, upgrade a React version, or swap an HTTP library. You'll run this once and throw it away. The process should be repeatable (you can inspect and rerun as you refine), and efficient (not a token-burning exercise).
 
-But in practice, vanilla GPT-4o achieves only ~45% success generating correct jscodeshift codemods on the first try. The failures break down as:
-- ~25% syntax/type errors (TypeScript compiler catches them)
-- ~12% runtime errors (jscodeshift runner crashes)
-- ~18% codemods that run but produce wrong output
+Two approaches worth comparing:
 
-That's a lot of wasted iterations.
+1. **LLM as codemod** — give an AI assistant the migration task and let it read and rewrite files directly
+2. **Iterative AST transform** — write a jscodeshift transform, run it, inspect the diff, fix edge cases, repeat
 
 ---
 
-## Why LLMs Struggle with Codemods
+## Approach 1: LLM as codemod
 
-### Text vs. Structure
+The simplest version: open Claude Code (or Cursor, or a script hitting the Anthropic API) and say something like:
 
-LLMs process code as **token sequences**. They're extremely good at recognizing patterns in text — which is why they can write fluent JavaScript — but codemods require operating on the **structural relationships** in code: parent/child node relationships, scope chains, type information, visitor traversal order.
+> "Migrate all files in `test/` from mocha to vitest. Replace `require('assert')` and `require('chai')` with vitest's `expect`. Convert all assertions to vitest equivalents. Add vitest imports."
 
-A codemod isn't a text transformation; it's a transformation of a tree. When an LLM writes:
+The LLM reads each file, understands the context holistically, and rewrites it. No tooling to install, no API to learn. It handles comments, unusual patterns, and mixed styles gracefully.
+
+**Where it works well:**
+
+- Small codebases or small sets of files (under ~30 files)
+- Heterogeneous code where each file needs slightly different treatment
+- Migrations involving judgment calls (renaming variables, restructuring async patterns)
+- When you genuinely don't know all the patterns upfront
+
+**Where it breaks down:**
+
+- Token cost scales linearly with file count. At ~1,500 tokens per file (input + output), 200 test files costs ~300k tokens — around $1–2 at current pricing, but more importantly it's *slow* (many sequential API calls) and non-deterministic
+- Each file is an independent LLM call. You can't easily verify completeness — did it miss files? Did it make different choices on similar patterns?
+- Large files can exceed context. The LLM sees the full file as text, not as structure
+- Subtle semantic bugs are hard to catch. The LLM writes confident, plausible-looking code that may silently change behavior in edge cases
+
+The LLM approach is best when the migration is conceptually complex but the codebase is small — when you want judgment, not scale.
+
+---
+
+## Approach 2: Iterative AST transform
+
+Write a jscodeshift transform. Run it. Look at the diff. Fix what's wrong. Run again.
+
+This is the approach tools like jscodeshift were designed for, and the iteration loop is the key insight: you don't have to write a perfect transform upfront. You write something that handles 80% of cases, inspect the output, then extend it.
+
+### The transform
+
+For a mocha→vitest migration, the key operations are:
 
 ```js
-root.find(j.CallExpression, { callee: { name: 'foo' } })
-  .replaceWith(/* ... */)
+// 1. Remove assert/chai requires, replace with vitest import
+// 2. Convert assert.strictEqual(a, b) → expect(a).toBe(b)
+// 3. Convert assert.deepEqual(a, b)   → expect(a).toEqual(b)
+// 4. Convert assert.throws(fn, /p/)   → expect(fn).toThrow(/p/)
+// 5. Convert assert.rejects(p, /p/)   → expect(p).rejects.toThrow(/p/)
+// 6. Convert chai .to.equal(b)        → .toBe(b)
+// 7. Convert chai .to.deep.equal(b)   → .toEqual(b)
+// 8. Add: import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 ```
 
-it's generating tokens that *look right* but may reflect a misunderstanding of the AST shape. The LLM has seen a lot of jscodeshift code in training, but it hasn't "run" any of it — it can't verify whether `.find()` returns a typed collection that supports the methods being called.
+The jscodeshift API is built around finding AST nodes by type and replacing them:
 
-### API Hallucination
+```js
+// assert.strictEqual(a, b) → expect(a).toBe(b)
+root
+  .find(j.CallExpression, {
+    callee: {
+      type: "MemberExpression",
+      object: { name: "assert" },
+      property: { name: (n) => n === "strictEqual" || n === "equal" },
+    },
+  })
+  .replaceWith((path) => {
+    const [actual, expected] = path.node.arguments;
+    return j.callExpression(
+      j.memberExpression(
+        j.callExpression(j.identifier("expect"), [actual]),
+        j.identifier("toBe")
+      ),
+      [expected]
+    );
+  });
+```
 
-jscodeshift's API surface is a particular trap. Collections are typed (you can't call FunctionExpression methods on an Identifier collection), visitor patterns are specific, and common mistakes are subtle. The LLM has limited training data on jscodeshift's specifics and will confidently generate plausible-looking but incorrect API calls.
+### Running it
 
-Newer tools like [ast-grep](https://ast-grep.github.io/) are worse still — they have even less training data, and models will sometimes invent syntax borrowing patterns from jscodeshift or CodeQL.
+```sh
+npx jscodeshift -t mocha-to-vitest.js test/ --parser=babel
+```
 
-### Scale and Context
+Output on 4 test files:
 
-Even when an LLM understands the transformation, applying it across a large codebase requires context the LLM doesn't have: cross-file dependencies, type information, import graphs. A transformation that's trivial in one file might need coordination across dozens of others. Processing full file text for every target file is token-expensive and hits context windows quickly.
+```
+Processing 4 files...
+Results: 0 errors  0 unmodified  0 skipped  4 ok
+Time elapsed: 0.674 seconds
+```
+
+### First-pass results
+
+The transform correctly handled the core patterns across all 4 files:
+
+```diff
+-const assert = require("assert");
++import { describe, it, expect } from "vitest";
+
+-assert.strictEqual(add(1, 2), 3);
++expect(add(1, 2)).toBe(3);
+
+-assert.deepEqual(user, { id: 1, name: "User 1" });
++expect(user).toEqual({ id: 1, name: "User 1" });
+
+-await assert.rejects(fetchUser(null), /id required/);
++await expect(fetchUser(null)).rejects.toThrow(/id required/);
+
+-expect(capitalize("hello")).to.equal("Hello");   // chai
++expect(capitalize("hello")).toBe("Hello");        // vitest
+
+-expect(log).to.deep.equal(["a", "b"]);
++expect(log).toEqual(["a", "b"]);
+```
+
+### First-pass issues (what the iteration is for)
+
+Two things to fix in pass 2:
+
+**1. Expressions wrapped in `assert.ok` don't get unwrapped**
+
+```js
+// Input:
+assert.ok(multiply(99, 0) === 0);
+
+// Output (pass 1):
+expect(multiply(99, 0) === 0).toBeTruthy();
+
+// Better (pass 2):
+expect(multiply(99, 0)).toBe(0);
+```
+
+The transform mechanically converts `assert.ok(expr)` → `expect(expr).toBeTruthy()`, which preserves behavior but doesn't understand that the original expression was a comparison. Fixing this requires recognizing that `assert.ok(a === b)` can be rewritten as `expect(a).toBe(b)` — a semantic, not just syntactic, transformation.
+
+**2. Leading comments on removed nodes are dropped**
+
+```js
+// Input:
+// Mix of assert and async/await patterns
+const assert = require("assert");
+
+// Output: the comment is gone
+import { describe, it, expect } from "vitest";
+```
+
+jscodeshift attaches comments to AST nodes as `leadingComments`. When you remove the node, the comment goes with it. Fixing this requires either preserving the comment explicitly or accepting the loss.
+
+Both are fixable in a second pass — but this is the point: the iteration is how you discover and address these edge cases systematically, with a clear diff showing what changed each time.
 
 ---
 
-## What Actually Works
+## Comparing the two approaches
 
-### Iterative Feedback Loops
+| | LLM as codemod | Iterative AST transform |
+|---|---|---|
+| Setup time | Minutes | 30–90 min to write the initial transform |
+| First-pass accuracy | High for common patterns; variable for edge cases | ~80–90% of targeted patterns; predictable gaps |
+| Handles unusual patterns | Yes — uses judgment | Only what you explicitly encode |
+| Deterministic | No — different runs may produce different output | Yes — same output every time |
+| Scalable | Linearly expensive; slow for 100+ files | Runs in seconds regardless of codebase size |
+| Verifiable | Hard — must read each diff manually | Run with `--dry`, review unified diff |
+| Iteratable | Re-running reruns everything | Re-running only processes unmodified files |
+| Comments/formatting | Usually preserved with care | Fragile — node deletion drops attached comments |
 
-Codemod.com's iterative AI system demonstrates the most practical improvement: generate a codemod, run the TypeScript compiler, run jscodeshift, diff the output against expected — then feed all of that back to the LLM to refine. This multi-pass approach lifts success rates substantially (toward 80%+). The LLM isn't smarter, but it gets corrective signal it can act on.
+### The token math
 
-This is similar to how AI coding assistants work best: not one-shot generation but iterative dialogue with real feedback.
-
-### Hybrid: AST Finds, AI Transforms
-
-A compelling pattern is using deterministic AST tools for *detection and locating* (precise, fast, no hallucination) and AI for *transformation* (flexible, context-aware). For example:
-
-1. Use tree-sitter or ast-grep to find all call sites matching a pattern
-2. Extract the surrounding context for each match
-3. Use an LLM to rewrite just that localized snippet
-
-This limits the LLM's surface area to something it can reason about reliably, while letting the AST layer handle structural navigation.
-
-### Giving LLMs AST Context
-
-If the LLM doesn't know the AST shape, you can tell it. Providing annotated AST dumps, type schemas, or explicit documentation of the jscodeshift/ast-grep API inline in the prompt reduces hallucination significantly. This is a form of RAG — grounding the LLM in verified external knowledge rather than relying on training data.
-
-[Moderne](https://www.moderne.ai/) takes this furthest with their Lossless Semantic Trees (LSTs): type-aware tree structures that preserve full semantic information, letting AI be applied surgically only where needed, with 100% accurate structural changes otherwise.
-
-### ast-grep as an AI-Friendly Tool
-
-ast-grep is notably more LLM-compatible than jscodeshift. Its declarative YAML rule format is simpler and more consistent — less surface area to hallucinate. It also provides an MCP server, meaning AI assistants (Claude Code, Cursor) can invoke ast-grep directly for structural search as part of a larger task, bypassing the need for the LLM to *write* AST manipulation code at all.
+For 200 test files at ~1,500 tokens per file: the LLM approach costs ~300k tokens per run. With 2–3 refinement iterations, you're at nearly 1M tokens. The jscodeshift approach: write the transform once (maybe with LLM assistance, at ~10k tokens total), run it in under a second, iterate on the transform itself — not the codebase.
 
 ---
 
-## The Deeper Issue: Semantic vs. Syntactic
+## Recommendation
 
-The real challenge isn't just API knowledge — it's semantic equivalence. A codemod must transform code without changing its behavior. LLMs are good at recognizing semantic patterns ("this is doing X") but poor at formally verifying semantic equivalence after transformation. They can make a change that looks right but subtly alters behavior at an edge case.
+For one-off codemods on a large codebase: **iterative AST transform**.
 
-Traditional codemods avoid this by making only structural changes that are provably equivalent by construction. LLMs can reason about equivalence informally but can't guarantee it.
+The upfront cost of learning the jscodeshift API is real, but it pays off quickly. The LLM approach's apparent ease is offset by the cost of verification — since the output is non-deterministic and each file is independent, you either trust it blindly or review every diff anyway.
 
-This is why the hybrid approach — deterministic structure + targeted AI — is where the field seems to be heading. The AI handles the parts that require judgment (semantic naming, handling heterogeneous call patterns), while deterministic tools handle the parts that require precision.
+The practical workflow:
+
+1. **Use an LLM to write the initial transform.** This is where LLMs genuinely help — generating jscodeshift boilerplate from a description. Expect ~3 iterations to get the first pass working (jscodeshift API hallucinations are common; the LLM will need corrective feedback from compiler/runtime errors).
+
+2. **Run with `--dry` first**, which prints a diff without writing files. Review the representative sample.
+
+3. **Iterate on the transform**, not the files. Each refinement pass is free — you're running a 0.6s script, not calling an API.
+
+4. **Accept imperfection.** A transform that handles 90% of cases correctly and leaves 10% untouched (jscodeshift marks them as `unmodified`) is often good enough. Find the residuals with grep and handle them manually or in a follow-up pass.
+
+5. **Check in the transform.** It's documentation of what you changed. Six months later when you wonder "why does this file look different from the others," you have an answer.
+
+### When to use the LLM approach instead
+
+- The codebase has under 20–30 files to touch
+- The patterns are genuinely heterogeneous (each file needs different judgment)
+- You can't articulate the transformation rules precisely enough to encode in a transform
+- The migration involves semantic restructuring that's hard to express as AST operations
 
 ---
 
-## Where This Leaves Us
+## The deeper tension
 
-AI-assisted codemod writing is genuinely useful today, especially for common, well-documented transformations where jscodeshift patterns are well-represented in training data. But raw LLM output is unreliable enough that workflow design matters a lot:
+The core issue is that LLMs operate on text tokens, while codemods require structural understanding. A jscodeshift transform knows that `assert.strictEqual` is a CallExpression with a MemberExpression callee — it can't accidentally match a string literal that contains those words. An LLM doesn't have that guarantee.
 
-- **Iterative feedback loops** (compiler + runner validation) are the most impactful improvement
-- **Hybrid detection/transformation** reduces the LLM's scope to what it handles well
-- **Grounding via AST schemas and docs** reduces hallucination
-- **Newer AST-aware tools** (ast-grep, Moderne) are designed with LLM integration in mind
+This shows up in a practical problem: LLMs commonly hallucinate jscodeshift's API. jscodeshift collections are typed (you can't call FunctionExpression methods on an Identifier collection), visitor patterns are specific, and there's limited training signal. The first few LLM-generated transforms typically need runtime-error feedback before they work.
 
-The vision of "describe your migration in English, get a codemod" is plausible — but it needs the scaffolding around the LLM, not just the LLM alone.
+The hybrid that works best: use the LLM to get you to a working transform faster (prompt → jscodeshift code → run → error → feed back to LLM → fix), then rely on the deterministic transform for the actual codebase migration.
 
 ---
 
-*Draft — links and examples to be expanded*
+*Research files: `research/codemods/` — fixture codebase and jscodeshift transform*
