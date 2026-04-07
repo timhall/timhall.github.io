@@ -17,7 +17,7 @@ One-off codemods on large codebases. You want to migrate from mocha to vitest, u
 Two approaches worth comparing:
 
 1. **LLM as codemod** — give an AI assistant the migration task and let it read and rewrite files directly
-2. **Iterative AST transform** — write a jscodeshift transform, run it, inspect the diff, fix edge cases, repeat
+2. **Iterative AST transform** — write a transform, run it, inspect the diff, fix edge cases, repeat
 
 ---
 
@@ -49,26 +49,17 @@ The LLM approach is best when the migration is conceptually complex but the code
 
 ## Approach 2: Iterative AST transform
 
-Write a jscodeshift transform. Run it. Look at the diff. Fix what's wrong. Run again.
+Write a transform. Run it. Look at the diff. Fix what's wrong. Run again.
 
-This is the approach tools like jscodeshift were designed for, and the iteration loop is the key insight: you don't have to write a perfect transform upfront. You write something that handles 80% of cases, inspect the output, then extend it.
+The iteration loop is the key insight: you don't have to write a perfect transform upfront. You write something that handles 80% of cases, inspect the output, then extend it.
 
-### The transform
+Two tools are worth examining here. jscodeshift is the established option and has the most LLM training data. jssg (from codemod.com) is newer, built on ast-grep's pattern syntax, and is the direction the field is heading.
 
-For a mocha→vitest migration, the key operations are:
+---
 
-```js
-// 1. Remove assert/chai requires, replace with vitest import
-// 2. Convert assert.strictEqual(a, b) → expect(a).toBe(b)
-// 3. Convert assert.deepEqual(a, b)   → expect(a).toEqual(b)
-// 4. Convert assert.throws(fn, /p/)   → expect(fn).toThrow(/p/)
-// 5. Convert assert.rejects(p, /p/)   → expect(p).rejects.toThrow(/p/)
-// 6. Convert chai .to.equal(b)        → .toBe(b)
-// 7. Convert chai .to.deep.equal(b)   → .toEqual(b)
-// 8. Add: import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-```
+### jscodeshift
 
-The jscodeshift API is built around finding AST nodes by type and replacing them:
+jscodeshift's API is built around finding AST nodes by type and replacing them:
 
 ```js
 // assert.strictEqual(a, b) → expect(a).toBe(b)
@@ -92,13 +83,11 @@ root
   });
 ```
 
-### Running it
+You're constructing AST nodes directly — verbose but explicit.
 
 ```sh
 npx jscodeshift -t mocha-to-vitest.js test/ --parser=babel
 ```
-
-Output on 4 test files:
 
 ```
 Processing 4 files...
@@ -106,120 +95,155 @@ Results: 0 errors  0 unmodified  0 skipped  4 ok
 Time elapsed: 0.674 seconds
 ```
 
-### First-pass results
+Clear output: file count, error count, timing. `--dry` prints a diff without writing.
 
-The transform correctly handled the core patterns across all 4 files:
+**First-pass issues discovered via diff:**
+
+1. Leading comments attached to removed nodes are silently dropped:
 
 ```diff
+-// Mix of assert and async/await patterns
 -const assert = require("assert");
 +import { describe, it, expect } from "vitest";
-
--assert.strictEqual(add(1, 2), 3);
-+expect(add(1, 2)).toBe(3);
-
--assert.deepEqual(user, { id: 1, name: "User 1" });
-+expect(user).toEqual({ id: 1, name: "User 1" });
-
--await assert.rejects(fetchUser(null), /id required/);
-+await expect(fetchUser(null)).rejects.toThrow(/id required/);
-
--expect(capitalize("hello")).to.equal("Hello");   // chai
-+expect(capitalize("hello")).toBe("Hello");        // vitest
-
--expect(log).to.deep.equal(["a", "b"]);
-+expect(log).toEqual(["a", "b"]);
 ```
 
-### First-pass issues (what the iteration is for)
+jscodeshift attaches comments to AST nodes as `leadingComments`. When you remove the node, the comment goes with it. Fixable, but a gotcha.
 
-Two things to fix in pass 2:
-
-**1. Expressions wrapped in `assert.ok` don't get unwrapped**
+2. `assert.ok(expr === value)` converts mechanically:
 
 ```js
-// Input:
-assert.ok(multiply(99, 0) === 0);
-
-// Output (pass 1):
-expect(multiply(99, 0) === 0).toBeTruthy();
-
-// Better (pass 2):
-expect(multiply(99, 0)).toBe(0);
+// in: assert.ok(multiply(99, 0) === 0)
+// out: expect(multiply(99, 0) === 0).toBeTruthy()   ← works, not idiomatic
+// better: expect(multiply(99, 0)).toBe(0)
 ```
 
-The transform mechanically converts `assert.ok(expr)` → `expect(expr).toBeTruthy()`, which preserves behavior but doesn't understand that the original expression was a comparison. Fixing this requires recognizing that `assert.ok(a === b)` can be rewritten as `expect(a).toBe(b)` — a semantic, not just syntactic, transformation.
+Fixing this requires semantic understanding of the wrapped expression — a second-pass improvement.
 
-**2. Leading comments on removed nodes are dropped**
+---
 
-```js
-// Input:
-// Mix of assert and async/await patterns
-const assert = require("assert");
+### jssg
 
-// Output: the comment is gone
-import { describe, it, expect } from "vitest";
+jssg uses [ast-grep](https://ast-grep.github.io/) structural patterns instead of explicit node construction. The same transform reads considerably more directly:
+
+```ts
+import type { Transform } from "codemod:ast-grep";
+
+const transform: Transform = (root) => {
+  const n = root.root();
+  const edits = [];
+
+  // assert.strictEqual(a, b) / assert.equal(a, b) → expect(a).toBe(b)
+  n.findAll({
+    rule: {
+      any: [
+        { pattern: "assert.strictEqual($A, $B)" },
+        { pattern: "assert.equal($A, $B)" },
+      ],
+    },
+  }).forEach((node) => {
+    const a = node.getMatch("A").text();
+    const b = node.getMatch("B").text();
+    edits.push(node.replace(`expect(${a}).toBe(${b})`));
+  });
+
+  return n.commitEdits(edits);
+};
 ```
 
-jscodeshift attaches comments to AST nodes as `leadingComments`. When you remove the node, the comment goes with it. Fixing this requires either preserving the comment explicitly or accepting the loss.
+The pattern syntax is close to the code itself. `$A` and `$B` capture subexpressions structurally — no need to know the AST node type names or navigate the type hierarchy manually.
 
-Both are fixable in a second pass — but this is the point: the iteration is how you discover and address these edge cases systematically, with a clear diff showing what changed each time.
+**Running it requires a two-step workflow:**
+
+```sh
+# Step 1: bundle the TypeScript transform
+npx codemod jssg bundle mocha-to-vitest.ts --output mocha-to-vitest.bundle.js
+
+# Step 2: run with absolute path (relative paths fail silently or error)
+npx codemod jssg run /abs/path/to/mocha-to-vitest.bundle.js \
+  --target /abs/path/to/test/ \
+  --language js
+```
+
+The bundle step is required even for simple transforms — the CLI doesn't resolve `.ts` files directly at runtime. The absolute path requirement is a rough edge: relative paths either fail with a module resolution error or run silently as a no-op.
+
+Dry-run works and produces a readable diff:
+
+```sh
+npx codemod jssg run ... --dry-run
+```
+
+**jssg output vs jscodeshift:**
+
+jssg's replacements are surgical text edits, not node replacements. This means leading comments are preserved:
+
+```diff
+ // Mix of assert and async/await patterns
+-const assert = require("assert");
++import { describe, it, expect } from "vitest";
+```
+
+The comment survives because the pattern `const assert = require("assert")` only matches that statement — the preceding comment line is a separate entity that jssg doesn't touch.
+
+The same semantic limitation applies: `assert.ok(expr === value)` still becomes `expect(expr === value).toBeTruthy()` in the first pass.
 
 ---
 
 ## Comparing the two approaches
 
-| | LLM as codemod | Iterative AST transform |
-|---|---|---|
-| Setup time | Minutes | 30–90 min to write the initial transform |
-| First-pass accuracy | High for common patterns; variable for edge cases | ~80–90% of targeted patterns; predictable gaps |
-| Handles unusual patterns | Yes — uses judgment | Only what you explicitly encode |
-| Deterministic | No — different runs may produce different output | Yes — same output every time |
-| Scalable | Linearly expensive; slow for 100+ files | Runs in seconds regardless of codebase size |
-| Verifiable | Hard — must read each diff manually | Run with `--dry`, review unified diff |
-| Iteratable | Re-running reruns everything | Re-running only processes unmodified files |
-| Comments/formatting | Usually preserved with care | Fragile — node deletion drops attached comments |
+| | LLM as codemod | jscodeshift | jssg |
+|---|---|---|---|
+| Setup time | Minutes | 30–90 min | 30–90 min |
+| First-pass accuracy | High; variable on edge cases | ~80–90%; predictable gaps | ~80–90%; predictable gaps |
+| Handles unusual patterns | Yes | Only what you encode | Only what you encode |
+| Deterministic | No | Yes | Yes |
+| Scalable | Linearly expensive | Seconds regardless of size | Seconds regardless of size |
+| Verifiable | Hard | `--dry` unified diff | `--dry-run` colored diff |
+| Pattern authoring | Natural language | AST node construction | Code-like patterns |
+| Comment preservation | Usually | Fragile — drops on removal | Surgical — preserves adjacent |
+| LLM hallucination risk | N/A | High — complex API | Lower — simpler pattern syntax |
+| CLI friction | None | Low | Medium — bundle step + absolute paths |
 
 ### The token math
 
-For 200 test files at ~1,500 tokens per file: the LLM approach costs ~300k tokens per run. With 2–3 refinement iterations, you're at nearly 1M tokens. The jscodeshift approach: write the transform once (maybe with LLM assistance, at ~10k tokens total), run it in under a second, iterate on the transform itself — not the codebase.
+For 200 test files at ~1,500 tokens per file: the LLM approach costs ~300k tokens per run. With 2–3 refinement iterations, you're near 1M tokens. The AST transform approach: write the transform once (maybe with LLM help, ~10k tokens), run it in under a second, iterate on the transform itself — not the codebase.
 
 ---
 
 ## Recommendation
 
-For one-off codemods on a large codebase: **iterative AST transform**.
+For one-off codemods on a large codebase: **iterative AST transform**, and between the two tools, **jssg is the better choice going forward** — the pattern syntax is simpler, LLMs write it more reliably, and comment preservation is better by default.
 
-The upfront cost of learning the jscodeshift API is real, but it pays off quickly. The LLM approach's apparent ease is offset by the cost of verification — since the output is non-deterministic and each file is independent, you either trust it blindly or review every diff anyway.
+The upfront cost is the same (you still need to understand what you're matching), but the patterns look like the code you're transforming rather than an AST construction API.
 
 The practical workflow:
 
-1. **Use an LLM to write the initial transform.** This is where LLMs genuinely help — generating jscodeshift boilerplate from a description. Expect ~3 iterations to get the first pass working (jscodeshift API hallucinations are common; the LLM will need corrective feedback from compiler/runtime errors).
+1. **Use an LLM to write the initial transform.** Describe the migration in plain terms and ask for a jssg transform. The code-like pattern syntax reduces hallucination significantly vs jscodeshift. Still expect 2–3 iterations to get it running.
 
-2. **Run with `--dry` first**, which prints a diff without writing files. Review the representative sample.
+2. **Run with `--dry-run` first.** Review the diff on a representative sample before writing.
 
-3. **Iterate on the transform**, not the files. Each refinement pass is free — you're running a 0.6s script, not calling an API.
+3. **Iterate on the transform**, not the files. Each pass is free — you're running a sub-second script.
 
-4. **Accept imperfection.** A transform that handles 90% of cases correctly and leaves 10% untouched (jscodeshift marks them as `unmodified`) is often good enough. Find the residuals with grep and handle them manually or in a follow-up pass.
+4. **Accept imperfection.** A transform that handles 90% of cases correctly and leaves 10% untouched is usually good enough. Grep for residuals and handle manually.
 
-5. **Check in the transform.** It's documentation of what you changed. Six months later when you wonder "why does this file look different from the others," you have an answer.
+5. **Check in the transform.** It documents what changed and why. A git-committed `mocha-to-vitest.ts` is much more honest than a vague commit message.
 
 ### When to use the LLM approach instead
 
-- The codebase has under 20–30 files to touch
-- The patterns are genuinely heterogeneous (each file needs different judgment)
-- You can't articulate the transformation rules precisely enough to encode in a transform
-- The migration involves semantic restructuring that's hard to express as AST operations
+- Under ~20–30 files to touch
+- Patterns are genuinely heterogeneous (each file needs different judgment)
+- You can't articulate the transformation rules precisely enough to encode
+- The migration involves semantic restructuring that's hard to express as pattern matching
 
 ---
 
 ## The deeper tension
 
-The core issue is that LLMs operate on text tokens, while codemods require structural understanding. A jscodeshift transform knows that `assert.strictEqual` is a CallExpression with a MemberExpression callee — it can't accidentally match a string literal that contains those words. An LLM doesn't have that guarantee.
+The core issue is that LLMs operate on text tokens, while codemods require structural understanding. The pattern `assert.strictEqual($A, $B)` in ast-grep matches the call expression structurally — it can't accidentally match a string literal that contains those words. An LLM operating on text doesn't have that guarantee.
 
-This shows up in a practical problem: LLMs commonly hallucinate jscodeshift's API. jscodeshift collections are typed (you can't call FunctionExpression methods on an Identifier collection), visitor patterns are specific, and there's limited training signal. The first few LLM-generated transforms typically need runtime-error feedback before they work.
+This shows up in a practical problem: LLMs commonly hallucinate jscodeshift's API. The API is complex (typed collections, visitor patterns, AST builder methods), and there's limited training signal for the specific error modes. The simpler pattern syntax of jssg reduces but doesn't eliminate this — the LLM still needs to understand which patterns match which syntax, and `commitEdits` vs node mutation is a new concept.
 
-The hybrid that works best: use the LLM to get you to a working transform faster (prompt → jscodeshift code → run → error → feed back to LLM → fix), then rely on the deterministic transform for the actual codebase migration.
+The hybrid that works best: use the LLM to get you to a working transform faster (describe the migration → get transform code → run → error → feed back → fix), then rely on the deterministic transform for the actual codebase. The LLM accelerates the authoring step; the AST tool handles the execution.
 
 ---
 
-*Research files: `research/codemods/` — fixture codebase and jscodeshift transform*
+*Research files: `research/codemods/` — fixture codebase, jscodeshift transform, and jssg transform*

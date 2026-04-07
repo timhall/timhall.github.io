@@ -14,6 +14,7 @@
 	},
 	"devDependencies": {
 		"astro": "^6.0.8",
+		"codemod": "^1.7.11",
 		"jscodeshift": "^17.3.0",
 		"katex": "^0.16.42",
 		"prettier": "^3.8.1",
