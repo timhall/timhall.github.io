@@ -23,5 +23,5 @@ export default defineConfig({
         "/articles/freebody/vectors": "/articles/vectors",
     },
     integrations: [svelte(), mdx()],
-    site: "https://timhall.github.io",
+    site: "https://timhall.dev",
 });
