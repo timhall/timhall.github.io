@@ -1,0 +1,179 @@
+---
+import Page from "../layouts/page.astro";
+---
+
+<style>
+	article {
+		display: flex;
+		flex-direction: column;
+		gap: var(--spacing-l);
+	}
+	ul {
+		margin-top: var(--spacing-m);
+		padding-inline-start: 1.25rem;
+	}
+	li {
+		margin-bottom: var(--spacing-m);
+	}
+
+	.employer {
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+	}
+	.employer-name {
+		font-weight: bold;
+	}
+	.employer-meta {
+		color: var(--muted-color);
+		font-size: 0.9rem;
+	}
+	.role {
+		margin: 0 0 var(--spacing-m);
+		color: var(--muted-color);
+	}
+	.note {
+		font-style: italic;
+		margin-top: var(--spacing-s);
+		margin-bottom: 0;
+		color: var(--muted-color);
+	}
+</style>
+
+<Page title="Resume">
+	<article>
+		<a
+			href="/resume.pdf"
+			download="Timothy Hall - Resume.pdf"
+			role="button"
+			class="outline"
+		>
+			Download PDF
+		</a>
+
+		<section>
+			<div class="employer">
+				<span class="employer-name">Postman</span>
+				<span class="employer-meta"
+					>Working Remotely | February 2022 – Present</span
+				>
+			</div>
+			<p class="role">Technical Lead</p>
+			<ul>
+				<li>
+					Leading the development of Postman's next runtime, the core that
+					powers all of Postman. Executes collections and requests of all types
+					using a plugin-driven approach that makes it simple to add new
+					low-level functionality to Postman, while reliably sending 100+
+					million requests every week
+				</li>
+				<li>
+					Led the development of Postman's new GraphQL client, building an
+					advanced query builder, schema documentation and explorer, and fast
+					schema search that integrated as simple and useful tooling for end
+					users
+					<p class="note">
+						Presented "Building Tooling That Speaks GraphQL" at GraphQLConf 2023
+					</p>
+				</li>
+				<li>
+					Created a foundation of accessible, composable, and reusable
+					components and systems that are applied to multiple workbenches,
+					including HTTP, gRPC, and GraphQL
+				</li>
+				<li>
+					Implemented improvements to the first time user flow to simplify and
+					beautify the landing screen, demonstrate the benefits of signing up,
+					and smooth the sign up experience that led to 50,000 more users
+					signing up every week
+				</li>
+				<li>
+					Modeled complex interactions in React using state machines, context,
+					signals, and other advanced state management approaches
+				</li>
+			</ul>
+		</section>
+
+		<section>
+			<div class="employer">
+				<span class="employer-name">Capital One</span>
+				<span class="employer-meta"
+					>Richmond, VA | July 2019 – February 2022</span
+				>
+			</div>
+			<p class="role">Master Software Developer</p>
+			<ul>
+				<li>
+					Tech Lead driving the architecture and design of UI products for
+					enterprise payments used across Capital One
+				</li>
+				<li>
+					Ensured the product and technical design smoothly grew from a small
+					team to multiple teams working in parallel while keeping the product,
+					and teams that built it, performant and reliable
+				</li>
+				<li>
+					Developed a backend system with GraphQL that intelligently spread
+					complex queries across multiple systems, including PostgreSQL,
+					Elasticsearch, and REST endpoints
+				</li>
+			</ul>
+			<p class="role">Senior Software Developer</p>
+			<ul>
+				<li>
+					Developed reusable components and tooling as part of the Design System
+					team that supported the entire Commercial organization within Capital
+					One
+				</li>
+				<li>
+					Discovered common patterns and needs from community feedback and
+					suggestions, created accessible components in Angular and React, and
+					ensured they were well-documented, tested, and useful before releasing
+					them to the organization
+				</li>
+			</ul>
+		</section>
+
+		<section>
+			<div class="employer">
+				<span class="employer-name">Cornerstone Systems NW</span>
+				<span class="employer-meta"
+					>Working Remotely | May 2013 – June 2019</span
+				>
+			</div>
+			<p class="role">Software Developer</p>
+			<ul>
+				<li>
+					Work collaboratively as part of a remote team of developers on large
+					React, d3, and Backbone.js applications, developing advanced systems
+					that condense information and tasks into focused, simple interfaces
+				</li>
+				<li>
+					Lead a developer experience initiative that unified and modernized
+					internal build tooling, testing, and development processes to aid
+					sharing across teams, improve code quality, and increase iteration
+					speed
+				</li>
+				<li>
+					Create composable and configurable charting system that dramatically
+					simplifies the process of creating new visualizations and allows rapid
+					iteration of chart design and layout
+					<p class="note">
+						See d3-composer for details: <a
+							href="https://github.com/CSNW/d3-composer"
+							>github.com/CSNW/d3-composer</a
+						>
+					</p>
+				</li>
+				<li>
+					Design and build an asynchronous data layer for working with csv data,
+					including querying, caching, and advanced processing
+				</li>
+				<li>
+					Create a reusable component library with React, Backbone, and d3
+					components for bootstrapping new projects and sharing best practices
+				</li>
+			</ul>
+		</section>
+	</article>
+</Page>
