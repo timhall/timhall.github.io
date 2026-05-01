@@ -1,2 +1,6 @@
+allowBuilds:
+  "@parcel/watcher": false
+  esbuild: true
+  sharp: false
 patchedDependencies:
-  '@picocss/pico@2.1.1': patches/@picocss__pico@2.1.1.patch
+  "@picocss/pico@2.1.1": patches/@picocss__pico@2.1.1.patch
