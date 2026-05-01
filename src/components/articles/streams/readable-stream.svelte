@@ -245,6 +245,10 @@
 </div>
 
 <style>
+	.readable-stream-example {
+		color: var(--color);
+	}
+
 	section {
 		display: flex;
 		flex-direction: column;
@@ -252,7 +256,7 @@
 	}
 
 	hr {
-		border: solid 1px var(--color-slate-400);
+		border: solid 1px light-dark(var(--color-slate-400), var(--color-slate-600));
 	}
 
 	pre {
