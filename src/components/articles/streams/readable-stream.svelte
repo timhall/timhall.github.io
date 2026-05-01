@@ -1,6 +1,6 @@
 <script lang="ts">
-	import ASCIIForm from "../../ui/ASCIIForm.svelte";
-	import ASCIIConnector from "../../ui/ASCIIConnector.svelte";
+	import ASCIIForm from "../../ascii/ASCIIForm.svelte";
+	import ASCIIConnector from "../../ascii/ASCIIConnector.svelte";
 
 	class ControlledReadableStream<TValue> extends ReadableStream<TValue> {
 		controller: ReadableStreamDefaultController<TValue>;
